@@ -1,0 +1,33 @@
+{
+  "name": "dd-sdk-mini-program",
+  "version": "0.0.1",
+  "description": "钉钉小程序 前端 API SDK",
+  "main": "build/index.js",
+  "scripts": {
+    "prepare": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zsqk/dd-sdk-mini-program.git"
+  },
+  "author": "zsqk",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zsqk/dd-sdk-mini-program/issues"
+  },
+  "homepage": "https://github.com/zsqk/dd-sdk-mini-program#readme",
+  "contributors": [
+    "iugo <npm@iugo.dev> (https://iugo.dev/)"
+  ],
+  "devDependencies": {
+    "@types/lodash": "^4.14.144",
+    "@typescript-eslint/eslint-plugin": "^2.6.1",
+    "@typescript-eslint/parser": "^2.6.1",
+    "eslint": "^6.6.0",
+    "typescript": "^3.7.2"
+  },
+  "dependencies": {
+    "lodash": "^4.17.15"
+  }
+}
