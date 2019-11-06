@@ -10,8 +10,11 @@ export function alert({
   content,
   buttonText
 }: {
+  /** 标题 */
   title: string;
+  /** 内容 */
   content: string;
+  /** 按钮文字 */
   buttonText?: string;
 }) {
   return new Promise((resolve, reject) => {
