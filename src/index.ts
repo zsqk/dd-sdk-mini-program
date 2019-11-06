@@ -1,6 +1,6 @@
 import forEach from "lodash/forEach";
 
-export default { alert, getAuthCode, httpRequest, redirectTo };
+export default { alert, confirm, getAuthCode, httpRequest, redirectTo };
 
 /**
  * 警告框
@@ -22,6 +22,28 @@ export function alert({
       title,
       content,
       buttonText,
+      success: resolve,
+      fail: reject
+    });
+  });
+}
+
+/**
+ * 确认框
+ */
+export function confirm(opt: {
+  /** confirm 框的标题 */
+  title: string;
+  /** confirm 框的内容 */
+  content: string;
+  /** 确认按钮文字 */
+  confirmButtonText?: string;
+  /** 取消按钮文字 */
+  cancelButtonText?: string;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.confirm({
+      ...opt,
       success: resolve,
       fail: reject
     });
