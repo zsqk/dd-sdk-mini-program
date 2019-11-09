@@ -137,3 +137,23 @@ export function getSystemInfoSync() {
     });
   });
 }
+
+/**
+ * createCanvasContext 创建 canvas 绘图上下文
+ */
+export function createCanvasContext({
+  canvasId
+} : {
+  /** 定义在  上的 id */
+  canvasId: string;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.createCanvasContext({
+      canvasId,
+      success(res: any) {
+        resolve(res);
+      },
+      fail: reject
+    });
+  });
+}
