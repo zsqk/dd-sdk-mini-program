@@ -1,6 +1,15 @@
 import forEach from "lodash/forEach";
 
-export default { alert, confirm, getAuthCode, httpRequest, redirectTo };
+export default {
+  alert,
+  confirm,
+  getAuthCode,
+  httpRequest,
+  redirectTo,
+  getSystemInfoSync,
+  createCanvasContext,
+  createSelectorQuery,
+};
 
 /**
  * 警告框
@@ -141,19 +150,13 @@ export function getSystemInfoSync() {
 /**
  * createCanvasContext 创建 canvas 绘图上下文
  */
-export function createCanvasContext({
-  canvasId
-} : {
-  /** 定义在  上的 id */
-  canvasId: string;
-}) {
-  return new Promise((resolve, reject) => {
-    dd.createCanvasContext({
-      canvasId,
-      success(res: any) {
-        resolve(res);
-      },
-      fail: reject
-    });
-  });
+export function createCanvasContext(canvasId: string) {
+  return Promise.resolve(dd.createCanvasContext(canvasId));
+}
+
+/**
+ * createSelectorQuery 获取一个节点查询对象 SelectorQuery
+ */
+export function createSelectorQuery(params: object) {
+  return Promise.resolve(dd.createSelectorQuery(params));
 }
