@@ -1,4 +1,4 @@
-# dd-sdk-mini-program
+# dd-sdk-mini-program [![npm version](https://img.shields.io/npm/v/@zsqk/dd-sdk-mini-program.svg?style=flat)](https://www.npmjs.com/package/@zsqk/dd-sdk-mini-program)
 
 钉钉小程序 JSAPI SDK.
 
