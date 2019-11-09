@@ -123,3 +123,17 @@ function getHeaders(origin: any) {
   }
   return origin;
 }
+
+/**
+ * getSystemInfoSync 获取系统信息
+ */
+export function getSystemInfoSync() {
+  return new Promise((resolve, reject) => {
+    dd.getSystemInfoSync({
+      success(res: any) {
+        resolve(res);
+      },
+      fail: reject
+    });
+  });
+}
