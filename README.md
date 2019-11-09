@@ -11,7 +11,20 @@
 - 总是最新, 没有兼容.
   (针对钉钉小程序内部 dd 的封装, 会随 dd 的变动而变, 旧版本没有意义.)
 
-## 全局变量 dd & my
+## 开发
+
+### 安装依赖
+
+```sh
+yarn
+```
+
+### 编辑器
+
+- 需要 ESLint
+- 可选 Prettier
+
+### 全局变量 dd & my
 
 阿里系小程序通用 API 列表:
 <https://docs.alipay.com/mini/multi-platform/common>
