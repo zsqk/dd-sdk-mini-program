@@ -137,14 +137,7 @@ function getHeaders(origin: any) {
  * getSystemInfoSync 获取系统信息
  */
 export function getSystemInfoSync() {
-  return new Promise((resolve, reject) => {
-    dd.getSystemInfoSync({
-      success(res: any) {
-        resolve(res);
-      },
-      fail: reject
-    });
-  });
+  return Promise.resolve(dd.getSystemInfoSync());
 }
 
 /**
@@ -157,6 +150,6 @@ export function createCanvasContext(canvasId: string) {
 /**
  * createSelectorQuery 获取一个节点查询对象 SelectorQuery
  */
-export function createSelectorQuery(params: object) {
-  return Promise.resolve(dd.createSelectorQuery(params));
+export function createSelectorQuery() {
+  return Promise.resolve(dd.createSelectorQuery());
 }
