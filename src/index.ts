@@ -15,11 +15,15 @@ export default {
   showActionSheet,
   uploadFile,
   downloadFile,
+  navigateTo,
+  navigateBack,
+  reLaunch,
+  setNavigationBar,
 };
 
 /**
  * 警告框
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 交互反馈}
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
  */
 export function alert({
   title,
@@ -46,7 +50,7 @@ export function alert({
 
 /**
  * 确认框
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 交互反馈}
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
  */
 export function confirm(opt: {
   /** confirm 框的标题 */
@@ -69,10 +73,10 @@ export function confirm(opt: {
 
 /**
  * 显示一个弱提示，可选择多少秒之后消失
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 交互反馈}
- * @param content 文字内容
- * @param type toast 类型，展示相应图标，默认 none，支持 success / fail / exception / none。其中 exception 类型必须传文字信息
- * @param duration 显示时长，单位为 ms，默认 2000。按系统规范，android只有两种(<=2s >2s)
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
+ * @param {string} content 文字内容
+ * @param {string} type toast 类型，展示相应图标，默认 none，支持 success / fail / exception / none。其中 exception 类型必须传文字信息
+ * @param {number} duration 显示时长，单位为 ms，默认 2000。按系统规范，android只有两种(<=2s >2s)
  */
 export function showToast(opt: {
   content?: string;
@@ -90,9 +94,9 @@ export function showToast(opt: {
 
 /**
  * 显示加载提示
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 交互反馈}
- * @param content loading的文字内容
- * @param delay 延迟显示，单位 ms，默认 0。如果在此时间之前调用了 dd.hideLoading 则不会显示
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
+ * @param {string} content loading的文字内容
+ * @param {number} delay 延迟显示，单位 ms，默认 0。如果在此时间之前调用了 dd.hideLoading 则不会显示
  */
 export function showLoading(opt: {
   content?: string;
@@ -109,7 +113,7 @@ export function showLoading(opt: {
 
 /**
  * 隐藏加载提示
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 交互反馈}
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
  */
 export function hideLoading() {
   return dd.hideLoading();
@@ -117,10 +121,10 @@ export function hideLoading() {
 
 /**
  * 显示操作菜单
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 交互反馈}
- * @param title 菜单标题
- * @param items 菜单按钮文字数组
- * @param cancelButtonText 取消按钮文案。注：Android平台此字段无效，不会显示取消按钮
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
+ * @param {string} title 菜单标题
+ * @param {Array<string>} items 菜单按钮文字数组
+ * @param {string} cancelButtonText 取消按钮文案。注：Android平台此字段无效，不会显示取消按钮
  */
 export function showActionSheet(opt: {
   title?: string;
@@ -157,11 +161,11 @@ export function getAuthCode() {
 
 /**
  * 发送网络请求
- * {@link https://ding-doc.dingtalk.com/doc#/dev/httprequest 网络}
- * @param url 目标服务器url
- * @param headers 设置请求的 HTTP 头，默认 {'Content-Type': 'application/x-www-form-urlencoded'}
- * @param method 默认GET，目前支持GET，POST
- * @param data  请求参数
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/httprequest 网络=>发送网络请求}
+ * @param {string} url 目标服务器url
+ * @param {any} headers 设置请求的 HTTP 头，默认 {'Content-Type': 'application/x-www-form-urlencoded'}
+ * @param {string} method 默认GET，目前支持GET，POST
+ * @param {any} data  请求参数
  */
 export function httpRequest(opt: {
   url: string;
@@ -195,12 +199,12 @@ export function httpRequest(opt: {
 /**
  * 上传本地资源到开发者服务器
  * {@link https://ding-doc.dingtalk.com/doc#/dev/frd69q 网络=>上传下载}
- * @param url 开发者服务器地址
- * @param filePath 要上传文件资源的本地定位符
- * @param fileName 文件名，即对应的 key, 开发者在服务器端通过这个 key 可以获取到文件二进制内容
- * @param fileType 文件类型，image / video
- * @param header HTTP 请求 Header
- * @param formData HTTP 请求中其他额外的 form 数据
+ * @param {string} url 开发者服务器地址
+ * @param {string} filePath 要上传文件资源的本地定位符
+ * @param {string} fileName 文件名，即对应的 key, 开发者在服务器端通过这个 key 可以获取到文件二进制内容
+ * @param {string} fileType 文件类型，image / video
+ * @param {any} header HTTP 请求 Header
+ * @param {any} formData HTTP 请求中其他额外的 form 数据
  */
 export function uploadFile(opt: {
   url: string;
@@ -233,8 +237,8 @@ export function uploadFile(opt: {
 /**
  * 下载文件资源到本地
  * {@link https://ding-doc.dingtalk.com/doc#/dev/frd69q 网络=>上传下载}
- * @param url 下载文件地址
- * @param header HTTP 请求 Header
+ * @param {string} url 下载文件地址
+ * @param {any} header HTTP 请求 Header
  */
 export function downloadFile(opt: {
   url: string;
@@ -255,20 +259,6 @@ export function downloadFile(opt: {
 }
 
 /**
- * 关闭当前页面，跳转到应用内的某个指定页面
- * @param {string} url
- */
-export function redirectTo(url: string) {
-  return new Promise((resolve, reject) => {
-    dd.redirectTo({
-      url,
-      success: resolve,
-      fail: reject
-    });
-  });
-}
-
-/**
  * 专为处理钉钉 httpRequest 问题
  */
 function getHeaders(origin: any) {
@@ -284,7 +274,7 @@ function getHeaders(origin: any) {
 
 /**
  * 获取系统信息
- * {@link https://ding-doc.dingtalk.com/doc#/dev/system-info 系统信息}.
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/system-info 设备=>系统信息}.
  */
 export function getSystemInfoSync() {
   return dd.getSystemInfoSync();
@@ -292,8 +282,8 @@ export function getSystemInfoSync() {
 
 /**
  * 创建 canvas 绘图上下文
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-canvas 画布}.
- * @param canvasId 定义在 上的 id
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-canvas 界面=>画布}.
+ * @param {string} canvasId 定义在 上的 id
  */
 export function createCanvasContext(canvasId: string) {
   return dd.createCanvasContext(canvasId);
@@ -301,8 +291,85 @@ export function createCanvasContext(canvasId: string) {
 
 /**
  * 获取一个节点查询对象 SelectorQuery
- * {@link https://ding-doc.dingtalk.com/doc#/dev/selector-query 节点查询}.
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/selector-query 界面=>节点查询}.
  */
 export function createSelectorQuery() {
   return dd.createSelectorQuery();
+}
+
+/**
+ * 关闭当前页面，跳转到应用内的某个指定页面
+ * @param {string} url 需要跳转的应用内非 tabBar 的目标页面路径 ,路径后可以带参数。参数规则如下：路径与参数之间使用?分隔，参数键与参数值用=相连，不同参数必须用&分隔；如path?key1=value1&key2=value2
+ */
+export function redirectTo(url: string) {
+  return new Promise((resolve, reject) => {
+    dd.redirectTo({
+      url,
+      success: resolve,
+      fail: reject
+    });
+  });
+}
+
+/**
+ * 保留当前页面，跳转到应用内的某个指定页面，可以使用 dd.navigateBack 返回到原来页面。
+ * 注意：页面最大深度为5，即可连续调用 5 次 navigateTo
+ * {@ink https://ding-doc.dingtalk.com/doc#/dev/ui-navigate 界面=>导航栏}
+ * @param {string} url 需要跳转的应用内非 tabBar 的目标页面路径 ,路径后可以带参数。参数规则如下：路径与参数之间使用?分隔，参数键与参数值用=相连，不同参数必须用&分隔；如 path?key1=value1&key2=value2
+ */
+export function navigateTo(url: string) {
+  return new Promise((resolve, reject) => {
+    dd.navigateTo({
+      url,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 关闭当前页面，返回上一级或多级页面。可通过 getCurrentPages 获取当前的页面栈信息，决定需要返回几层。
+ * {@ink https://ding-doc.dingtalk.com/doc#/dev/ui-navigate 界面=>导航栏}
+ * @param {number} delta 默认值1，返回的页面数，如果 delta 大于现有打开的页面数，则返回到当前页面栈最顶部的页
+ */
+export function navigateBack(delta: number) {
+  return dd.navigateBack({
+    delta: delta,
+  })
+}
+
+/**
+ * 关闭当前所有页面，跳转到应用内的某个指定页面。
+ * {@ink https://ding-doc.dingtalk.com/doc#/dev/ui-navigate 界面=>导航栏}
+ * @param {string} url 页面路径。如果页面不为 tabbar 页面则路径后可以带参数。参数规则如下：路径与参数之间使用?分隔，参数键与参数值用=相连，不同参数必须用&分隔；如path?key1=value1&key2=value2
+ */
+export function reLaunch(url: string) {
+  return new Promise((resolve, reject) => {
+    dd.reLaunch({
+      url,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 设置导航栏文字及样式
+ * {@ink https://ding-doc.dingtalk.com/doc#/dev/ui-navigate 界面=>导航栏}
+ * @param {string} title 导航栏标题
+ * @param {string} backgroundColor 导航栏背景色，支持十六进制颜色值
+ * @param {boolean} reset 是否重置导航栏为钉钉默认配色，默认 false
+ */
+export function setNavigationBar(opt: {
+  title?: string;
+  backgroundColor?: string;
+  reset?: boolean;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.setNavigationBar({
+      ...opt,
+      success: resolve,
+      fail: reject,
+    })
+  })
 }
