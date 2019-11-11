@@ -31,5 +31,3 @@ yarn
 
 钉钉小程序 JSAPI 文档:
 <https://ding-doc.dingtalk.com/doc#/dev/httprequest>
-
-ceshi
