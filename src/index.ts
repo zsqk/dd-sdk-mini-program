@@ -23,7 +23,7 @@ export default {
 
 /**
  * 警告框
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 交互反馈}
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
  */
 export function alert({
   title,
@@ -50,7 +50,7 @@ export function alert({
 
 /**
  * 确认框
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 交互反馈}
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
  */
 export function confirm(opt: {
   /** confirm 框的标题 */
@@ -73,7 +73,7 @@ export function confirm(opt: {
 
 /**
  * 显示一个弱提示，可选择多少秒之后消失
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 交互反馈}
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
  * @param {string} content 文字内容
  * @param {string} type toast 类型，展示相应图标，默认 none，支持 success / fail / exception / none。其中 exception 类型必须传文字信息
  * @param {number} duration 显示时长，单位为 ms，默认 2000。按系统规范，android只有两种(<=2s >2s)
@@ -94,7 +94,7 @@ export function showToast(opt: {
 
 /**
  * 显示加载提示
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 交互反馈}
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
  * @param {string} content loading的文字内容
  * @param {number} delay 延迟显示，单位 ms，默认 0。如果在此时间之前调用了 dd.hideLoading 则不会显示
  */
@@ -113,7 +113,7 @@ export function showLoading(opt: {
 
 /**
  * 隐藏加载提示
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 交互反馈}
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
  */
 export function hideLoading() {
   return dd.hideLoading();
@@ -121,7 +121,7 @@ export function hideLoading() {
 
 /**
  * 显示操作菜单
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 交互反馈}
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
  * @param {string} title 菜单标题
  * @param {Array<string>} items 菜单按钮文字数组
  * @param {string} cancelButtonText 取消按钮文案。注：Android平台此字段无效，不会显示取消按钮
@@ -161,7 +161,7 @@ export function getAuthCode() {
 
 /**
  * 发送网络请求
- * {@link https://ding-doc.dingtalk.com/doc#/dev/httprequest 网络}
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/httprequest 网络=>发送网络请求}
  * @param {string} url 目标服务器url
  * @param {any} headers 设置请求的 HTTP 头，默认 {'Content-Type': 'application/x-www-form-urlencoded'}
  * @param {string} method 默认GET，目前支持GET，POST
@@ -274,7 +274,7 @@ function getHeaders(origin: any) {
 
 /**
  * 获取系统信息
- * {@link https://ding-doc.dingtalk.com/doc#/dev/system-info 系统信息}.
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/system-info 设备=>系统信息}.
  */
 export function getSystemInfoSync() {
   return dd.getSystemInfoSync();
@@ -282,7 +282,7 @@ export function getSystemInfoSync() {
 
 /**
  * 创建 canvas 绘图上下文
- * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-canvas 画布}.
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-canvas 界面=>画布}.
  * @param {string} canvasId 定义在 上的 id
  */
 export function createCanvasContext(canvasId: string) {
@@ -291,7 +291,7 @@ export function createCanvasContext(canvasId: string) {
 
 /**
  * 获取一个节点查询对象 SelectorQuery
- * {@link https://ding-doc.dingtalk.com/doc#/dev/selector-query 节点查询}.
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/selector-query 界面=>节点查询}.
  */
 export function createSelectorQuery() {
   return dd.createSelectorQuery();
