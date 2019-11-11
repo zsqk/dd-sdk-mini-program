@@ -134,22 +134,26 @@ function getHeaders(origin: any) {
 }
 
 /**
- * getSystemInfoSync 获取系统信息
+ * 获取系统信息
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/system-info 系统信息}.
  */
 export function getSystemInfoSync() {
-  return Promise.resolve(dd.getSystemInfoSync());
+  return dd.getSystemInfoSync();
 }
 
 /**
- * createCanvasContext 创建 canvas 绘图上下文
+ * 创建 canvas 绘图上下文
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-canvas 画布}.
+ * @param canvasId 定义在 上的 id
  */
 export function createCanvasContext(canvasId: string) {
-  return Promise.resolve(dd.createCanvasContext(canvasId));
+  return dd.createCanvasContext(canvasId);
 }
 
 /**
- * createSelectorQuery 获取一个节点查询对象 SelectorQuery
+ * 获取一个节点查询对象 SelectorQuery
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/selector-query 节点查询}.
  */
 export function createSelectorQuery() {
-  return Promise.resolve(dd.createSelectorQuery());
+  return dd.createSelectorQuery();
 }
