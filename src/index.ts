@@ -334,7 +334,7 @@ export function navigateTo(url: string) {
  */
 export function navigateBack(delta: number) {
   return dd.navigateBack({
-    delta: delta,
+    delta,
   })
 }
 
@@ -368,6 +368,21 @@ export function setNavigationBar(opt: {
   return new Promise((resolve, reject) => {
     dd.setNavigationBar({
       ...opt,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 跳转到指定 tabBar 页面，并关闭其他所有非 tabBar 页面。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-tabbar 界面=>TabBar}
+ * @param {string} url 跳转的 tabBar 页面的路径（需在 app.json 的 tabBar 字段定义的页面）。注意：路径后不能带参数
+ */
+export function switchTab(url: string) {
+  return new Promise((resolve, reject) => {
+    dd.switchTab({
+      url,
       success: resolve,
       fail: reject,
     })
