@@ -1,6 +1,15 @@
 import forEach from "lodash/forEach";
 
-export default { alert, confirm, getAuthCode, httpRequest, redirectTo };
+export default {
+  alert,
+  confirm,
+  getAuthCode,
+  httpRequest,
+  redirectTo,
+  getSystemInfoSync,
+  createCanvasContext,
+  createSelectorQuery,
+};
 
 /**
  * 警告框
@@ -122,4 +131,25 @@ function getHeaders(origin: any) {
     return obj;
   }
   return origin;
+}
+
+/**
+ * getSystemInfoSync 获取系统信息
+ */
+export function getSystemInfoSync() {
+  return Promise.resolve(dd.getSystemInfoSync());
+}
+
+/**
+ * createCanvasContext 创建 canvas 绘图上下文
+ */
+export function createCanvasContext(canvasId: string) {
+  return Promise.resolve(dd.createCanvasContext(canvasId));
+}
+
+/**
+ * createSelectorQuery 获取一个节点查询对象 SelectorQuery
+ */
+export function createSelectorQuery() {
+  return Promise.resolve(dd.createSelectorQuery());
 }
