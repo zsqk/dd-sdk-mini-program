@@ -13,6 +13,8 @@ export default {
   showLoading,
   hideLoading,
   showActionSheet,
+  uploadFile,
+  downloadFile,
 };
 
 /**
@@ -128,9 +130,11 @@ export function showActionSheet(opt: {
   return new Promise((resolve, reject) => {
     dd.showActionSheet({
       ...opt,
-      success(res: any) {
-        /** @returns index 被点击的按钮的索引，从0开始。点击取消或蒙层时返回 -1 */
-        resolve(res.index);
+      /** @returns index 被点击的按钮的索引，从0开始。点击取消或蒙层时返回 -1 */
+      success: (res: {
+        index: number,
+      }) => {
+        resolve(res);
       },
       fail: reject,
     })
@@ -153,6 +157,11 @@ export function getAuthCode() {
 
 /**
  * 发送网络请求
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/httprequest 网络}
+ * @param url 目标服务器url
+ * @param headers 设置请求的 HTTP 头，默认 {'Content-Type': 'application/x-www-form-urlencoded'}
+ * @param method 默认GET，目前支持GET，POST
+ * @param data  请求参数
  */
 export function httpRequest(opt: {
   url: string;
@@ -181,6 +190,68 @@ export function httpRequest(opt: {
       ...rest
     });
   });
+}
+
+/**
+ * 上传本地资源到开发者服务器
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/frd69q 网络=>上传下载}
+ * @param url 开发者服务器地址
+ * @param filePath 要上传文件资源的本地定位符
+ * @param fileName 文件名，即对应的 key, 开发者在服务器端通过这个 key 可以获取到文件二进制内容
+ * @param fileType 文件类型，image / video
+ * @param header HTTP 请求 Header
+ * @param formData HTTP 请求中其他额外的 form 数据
+ */
+export function uploadFile(opt: {
+  url: string;
+  filePath: string;
+  fileName: string;
+  fileType: string;
+  header?: any;
+  formData?: any;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.uploadFile({
+      ...opt,
+      /**
+       * @returns data 服务器返回的数据
+       * @returns statusCode HTTP 状态码
+       * @returns header 服务器返回的 header
+       */
+      success: (res: {
+        data: string,
+        statusCode: string,
+        header: any
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 下载文件资源到本地
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/frd69q 网络=>上传下载}
+ * @param url 下载文件地址
+ * @param header HTTP 请求 Header
+ */
+export function downloadFile(opt: {
+  url: string;
+  header?: any;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.downloadFile({
+      ...opt,
+      /** @returns filePath 文件临时存放的位置 */
+      success: (res: {
+        filePath: string,
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
 }
 
 /**
