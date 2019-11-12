@@ -21,6 +21,7 @@ export default {
   setNavigationBar,
   switchTab,
   datePicker,
+  createAnimation,
 };
 
 /**
@@ -430,4 +431,23 @@ export function onPullDownRefresh() {
  */
 export function stopPullDownRefresh() {
   return dd.stopPullDownRefresh();
+}
+
+/**
+ * 创建动画实例animation。调用实例的方法来描述动画，最后通过动画实例的export方法将动画数据导出并传递给组件的animation属性
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-animation 界面=>动画}
+ * @param {number} duration 动画的持续时间，单位 ms，默认值 400
+ * @param {string} timeFunction 定义动画的效果，默认值"linear"，有效值："linear","ease","ease-in","ease-in-out","ease-out","step-start","step-end"
+ * @param {number} delay 动画延迟时间，单位 ms，默认值 0
+ * @param {string} transformOrigin 设置transform-origin，默认值 "50"
+ */
+export function createAnimation(opt: {
+  duration?: number;
+  timeFunction?: string;
+  delay?: number;
+  transformOrigin?: string;
+}) {
+  return dd.createAnimation({
+    ...opt,
+  })
 }
