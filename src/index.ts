@@ -348,11 +348,7 @@ export function navigateTo(url: string) {
  * {@ink https://ding-doc.dingtalk.com/doc#/dev/ui-navigate 界面=>导航栏}
  * @param delta 默认值1，返回的页面数，如果 delta 大于现有打开的页面数，则返回到当前页面栈最顶部的页
  */
-export function navigateBack({
-  delta = 1,
-}: {
-  delta: number;
-}) {
+export function navigateBack(delta = 1) {
   return dd.navigateBack({
     delta,
   })
