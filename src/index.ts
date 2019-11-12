@@ -19,6 +19,8 @@ export default {
   navigateBack,
   reLaunch,
   setNavigationBar,
+  switchTab,
+  datePicker,
 };
 
 /**
@@ -134,11 +136,11 @@ export function showActionSheet(opt: {
   return new Promise((resolve, reject) => {
     dd.showActionSheet({
       ...opt,
-      /** @returns index 被点击的按钮的索引，从0开始。点击取消或蒙层时返回 -1 */
+      /** @returns {number} index 被点击的按钮的索引，从0开始。点击取消或蒙层时返回 -1 */
       success: (res: {
         index: number,
       }) => {
-        resolve(res);
+        resolve(res.index);
       },
       fail: reject,
     })
@@ -218,9 +220,9 @@ export function uploadFile(opt: {
     dd.uploadFile({
       ...opt,
       /**
-       * @returns data 服务器返回的数据
-       * @returns statusCode HTTP 状态码
-       * @returns header 服务器返回的 header
+       * @returns {string} data 服务器返回的数据
+       * @returns {string} statusCode HTTP 状态码
+       * @returns {any} header 服务器返回的 header
        */
       success: (res: {
         data: string,
@@ -247,7 +249,7 @@ export function downloadFile(opt: {
   return new Promise((resolve, reject) => {
     dd.downloadFile({
       ...opt,
-      /** @returns filePath 文件临时存放的位置 */
+      /** @returns {string} filePath 文件临时存放的位置 */
       success: (res: {
         filePath: string,
       }) => {
@@ -390,6 +392,26 @@ export function switchTab(url: string) {
 }
 
 /**
+ * 打开日期选择列表
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-date 界面=>选择日期}
+ * @param {string} format 返回的日期格式， 1.yyy-MM-dd（默认） 2.HH:mm 3.yyyy-MM-dd HH:mm 4.yyyy-MM
+ * @param {string} currentDate 初始选择的日期时间，默认当前时间
+ */
+export function datePicker(opt: {
+  format?: string;
+  currentDate?: string;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.datePicker({
+      ...opt,
+      /** @returns {string} date 选择的日期 */
+      success(res: any) {
+        resolve(res.date);
+      },
+      fail: reject,
+    })
+  })
+
  * 下拉刷新操作
  * {@link https://ding-doc.dingtalk.com/doc#/dev/pulldown 界面=>下拉刷新}
  * 在 Page 中自定义 onPullDownRefresh 函数，可以监听该页面用户的下拉刷新事件。
