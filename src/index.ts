@@ -22,6 +22,9 @@ export default {
   switchTab,
   datePicker,
   createAnimation,
+  hideKeyboard,
+  onKeyboardShow,
+  pageScrollTo,
 };
 
 /** 毫秒 */
@@ -476,5 +479,39 @@ export function createAnimation({
     timeFunction,
     delay,
     transformOrigin,
+  })
+}
+
+/**
+ * 监听键盘弹起事件，并返回键盘高度
+ * 键盘高度可以在回调参数的data.height参数中取到，单位为px。
+ * 需要在page中设置该回调。
+ */
+export function onKeyboardShow(res: any) {
+  return res.data.height;
+}
+
+/**
+ * 监听键盘收起事件。
+ * 需要在page中设置该回调。
+ * 调用 onKeyboardHide()
+ */
+
+/**
+ * 隐藏键盘
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-hidekeyboard 界面=>键盘}
+ */
+export function hideKeyboard() {
+  return dd.hideKeyboard();
+}
+
+/**
+ * 滚动到页面的目标位置
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/scroll 界面=>滚动}
+ * @param scrollTop 滚动到页面的目标位置，单位 px
+ */
+export function pageScrollTo(scrollTop: number) {
+  return dd.pageScrollTo({
+    scrollTop,
   })
 }
