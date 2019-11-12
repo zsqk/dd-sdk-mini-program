@@ -84,17 +84,20 @@ export function confirm(opt: {
  * @param type toast 类型，展示相应图标，默认 none，支持 success / fail / exception / none。其中 exception 类型必须传文字信息
  * @param duration 显示时长，单位为 ms，默认 2000。按系统规范，android只有两种(<=2s >2s)
  */
-export function showToast(opt: {
+export function showToast({
+  content,
+  type = 'none',
+  duration = 2000,
+}: {
   content?: string;
   type?: 'success' | 'fail' | 'exception' | 'none';
   duration?: Millisecond;
-} = {
-  type: 'none',
-  duration: 2000,
-}) {
+} = {}) {
   return new Promise((resolve, reject) => {
     dd.showToast({
-      ...opt,
+      content,
+      type,
+      duration,
       success: resolve,
       fail: reject,
     })
@@ -107,15 +110,17 @@ export function showToast(opt: {
  * @param content loading的文字内容
  * @param delay 延迟显示，单位 ms，默认 0。如果在此时间之前调用了 dd.hideLoading 则不会显示
  */
-export function showLoading(opt: {
+export function showLoading({
+  content,
+  delay = 0,
+}: {
   content?: string;
   delay?: Millisecond;
-} = {
-  delay: 0,
-}) {
+} = {}) {
   return new Promise((resolve, reject) => {
     dd.showLoading({
-      ...opt,
+      content,
+      delay,
       success: resolve,
       fail: reject,
     })
@@ -343,13 +348,13 @@ export function navigateTo(url: string) {
  * {@ink https://ding-doc.dingtalk.com/doc#/dev/ui-navigate 界面=>导航栏}
  * @param delta 默认值1，返回的页面数，如果 delta 大于现有打开的页面数，则返回到当前页面栈最顶部的页
  */
-export function navigateBack(opt: {
+export function navigateBack({
+  delta = 1,
+}: {
   delta: number;
-} = {
-  delta: 1,
 }) {
   return dd.navigateBack({
-    ...opt,
+    delta,
   })
 }
 
@@ -375,16 +380,20 @@ export function reLaunch(url: string) {
  * @param backgroundColor 导航栏背景色，支持十六进制颜色值
  * @param reset 是否重置导航栏为钉钉默认配色，默认 false
  */
-export function setNavigationBar(opt: {
+export function setNavigationBar({
+  title,
+  backgroundColor,
+  reset = false,
+}: {
   title?: string;
   backgroundColor?: string;
   reset?: boolean;
-} = {
-  reset: false,
-}) {
+} = {}) {
   return new Promise((resolve, reject) => {
     dd.setNavigationBar({
-      ...opt,
+      title,
+      backgroundColor,
+      reset,
       success: resolve,
       fail: reject,
     })
@@ -455,18 +464,21 @@ export function stopPullDownRefresh() {
  * @param delay 动画延迟时间，单位 ms，默认值 0
  * @param transformOrigin 设置transform-origin，默认值 "50"
  */
-export function createAnimation(opt: {
+export function createAnimation({
+  duration = 400,
+  timeFunction = 'linear',
+  delay = 0,
+  transformOrigin = '50',
+}: {
   duration?: Millisecond;
   timeFunction?: "linear" | "ease" | "ease-in" | "ease-in-out" | "ease-out" | "step-start" | "step-end";
   delay?: Millisecond;
   transformOrigin?: string;
-} = {
-  duration: 400,
-  timeFunction: 'linear',
-  delay: 0,
-  transformOrigin: '50',
-}) {
+} = {}) {
   return dd.createAnimation({
-    ...opt,
+    duration,
+    timeFunction,
+    delay,
+    transformOrigin,
   })
 }
