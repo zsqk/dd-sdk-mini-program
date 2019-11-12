@@ -25,6 +25,13 @@ export default {
   hideKeyboard,
   onKeyboardShow,
   pageScrollTo,
+  complexChoose,
+  chooseDepartments,
+  createGroupChat,
+  choosePhonebook,
+  chooseExternalUsers,
+  editExternalUser,
+  chooseUserFromList,
 };
 
 /** 毫秒 */
@@ -513,5 +520,356 @@ export function hideKeyboard() {
 export function pageScrollTo(scrollTop: number) {
   return dd.pageScrollTo({
     scrollTop,
+  })
+}
+
+/**
+ * 获取用户当前的地理位置信息
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/location 位置}
+ * @param cacheTimeout 钉钉客户端经纬度定位缓存过期时间，单位秒。默认 30s。使用缓存会加快定位速度，缓存过期会重新定位。
+ * @param type 0：获取经纬度； 1：默认，获取经纬度和详细到区县级别的逆地理编码数据
+ */
+export function getLocation({
+  cacheTimeout = 30,
+  type,
+}: {
+  cacheTimeout?: Number,
+  type?: number,
+} = {}) {
+  return new Promise((resolve, reject) => {
+    dd.getLocation({
+      cacheTimeout,
+      type,
+      success: (res: {
+        longitude: string,
+        latitude: string,
+        accuracy: string,
+        province: string,
+        city: string,
+        address: string,
+      }) => {
+        resolve(res);
+      },
+      fail: reject
+    })
+  })
+}
+
+/**
+ * 调用扫一扫功能
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/vglq4x 开放接口=>扫码}
+ * @param type 扫码样式(默认 qr)：1, qr，扫码框样式为二维码扫码框 2.bar，扫码样式为条形码扫码框
+ */
+export function scan(type = 'qr') {
+  return new Promise((resolve, reject) => {
+    dd.scan({
+      type,
+      /**
+       * @returns code 扫码所得数据
+       * @returns qrCode 扫描二维码时返回二维码数据
+       * @returns barCode 扫描条形码时返回条形码数据
+       */
+      success: (res: {
+        code: string,
+        qrCode: string,
+        barCode: string,
+      }) => {
+        resolve(res);
+      },
+      fail: reject
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>选人和部门
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param title 标题
+ * @param multiple 是否多选
+ * @param limitTips 超过限定人数返回提示
+ * @param maxUsers 	最大可选人数
+ * @param pickedUsers 已选用户，值为userId列表
+ * @param pickedDepartments 已选部门
+ * @param disabledUsers 不可选用户，值为userId列表
+ * @param disabledDepartments 不可选部门
+ * @param requiredUsers 必选用户（不可取消选中状态），值为userId列表
+ * @param requiredDepartments 必选部门（不可取消选中状态）
+ * @param permissionType 选人权限，目前只有GLOBAL这个参数
+ * @param responseUserOnly true：返回人员信息 false：返回人员和部门信息
+ * @param startWithDepartmentId 仅支持0和-1两个值： 0表示从企业最上层开始； -1表示从自己部门开始，为-1时仅在Android端生效
+ */
+export function complexChoose(opt: {
+  title: string;
+  multiple: boolean;
+  limitTips: string;
+  maxUsers: number;
+  pickedUsers: Array<string>;
+  pickedDepartments: Array<string>;
+  disabledUsers: Array<string>;
+  disabledDepartments: Array<string>;
+  requiredUsers: Array<string>;
+  requiredDepartments: Array<string>;
+  permissionType: string;
+  responseUserOnly: boolean;
+  startWithDepartmentId: number;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.complexChoose({
+      ...opt,
+      /**
+       * @returns selectedCount 选择人数
+       * @returns users 返回选人的列表，列表中的对象包含name（用户名），avatar（用户头像），userId（用户工号）三个字段
+       * @returns departments 返回已选部门列表，列表中每个对象包含id（部门id）、name（部门名称）、count（部门人数）
+       * 
+       */
+      success: (res: {
+        selectedCount: number,
+        users: Array<object>,
+        departments: Array<object>,
+      }) => {
+        resolve(res);
+      },
+      fail: reject
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>选择部门信息
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param title 标题
+ * @param multiple 是否多选
+ * @param limitTips 超过限定人数返回提示
+ * @param maxDepartments 	最大可选部门数
+ * @param pickedDepartments 已选部门
+ * @param disabledDepartments 不可选部门
+ * @param requiredDepartments 必选部门（不可取消选中状态）
+ * @param permissionType 选人权限，目前只有GLOBAL这个参数
+ */
+export function chooseDepartments(opt: {
+  title: string;
+  multiple: boolean;
+  limitTips: string;
+  maxDepartments: number;
+  pickedDepartments: Array<string>;
+  disabledDepartments: Array<string>;
+  requiredDepartments: Array<string>;
+  permissionType: string;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.chooseDepartments({
+      ...opt,
+      /**
+       * @returns selectedCount 选择人数
+       * @returns departmentsCount 选择的部门数
+       * @returns departments 返回已选部门列表，列表中每个对象包含id（部门id）、name（部门名称）、number（部门人数）
+       * 
+       */
+      success: (res: {
+        userCount: number,
+        departmentsCount: number,
+        departments: Array<object>,
+      }) => {
+        resolve(res);
+      },
+      fail: reject
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>创建企业群聊天
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param users 默认选中的userId列表
+ */
+export function createGroupChat(users: Array<string>) {
+  return new Promise((resolve, reject) => {
+    dd.createGroupChat({
+      users,
+      /**@returns id 企业群id */
+      success: (res: {
+        id: Array<string>
+      }) => {
+        resolve(res.id);
+      },
+      fail: reject
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>选取手机通讯录
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param title 如果你需要修改选人页面的title，可以在这里赋值
+ * @param multiple 是否多选： true多选，false单选； 默认true
+ * @param maxUsers 人数限制，当multiple为true才生效，可选范围1-1500
+ * @param limitTips 超过人数限制的提示语可以用这个字段自定义
+ */
+export function choosePhonebook({
+  title,
+  multiple = true,
+  limitTips,
+  maxUsers,
+}: {
+  title: string;
+  multiple?: boolean;
+  limitTips: string;
+  maxUsers: number;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.choosePhonebook({
+      title,
+      multiple,
+      limitTips,
+      maxUsers,
+      /**
+       * @returns name 姓名
+       * @returns avatar 头像图片id，可能为空
+       * @returns mobile 用户手机号
+       */
+      success: (res: Array<object>) => {
+        resolve(res);
+      },
+      fail: reject
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>选择外部联系人
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param title 选择联系人标题
+ * @param multiple 是否多选： true多选，false单选； 默认true
+ * @param maxUsers 最多选择的人数
+ * @param limitTips 限制选择人数，0为不限制
+ * @param pickedUsers 默认选中的人，值为userId列表。注意:已选中可以取消
+ * @param disabledUsers 不能选的人，值为userId列表
+ * @param requiredUsers 默认选中且不可取消选中状态的人，值为userId列表
+ */
+export function chooseExternalUsers({
+  title,
+  multiple = true,
+  limitTips,
+  maxUsers,
+  pickedUsers,
+  disabledUsers,
+  requiredUsers,
+}: {
+  title: string;
+  multiple?: boolean;
+  limitTips: string;
+  maxUsers: number;
+  pickedUsers: Array<string>;
+  disabledUsers: Array<string>;
+  requiredUsers: Array<string>;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.chooseExternalUsers({
+      title,
+      multiple,
+      limitTips,
+      maxUsers,
+      pickedUsers,
+      disabledUsers,
+      requiredUsers,
+      /**
+       * @returns name 姓名
+       * @returns avatar 头像图片url，可能为空
+       * @returns userId 用户id
+       * @returns orgName 公司名字
+       */
+      success: (res: Array<object>) => {
+        resolve(res);
+      },
+      fail: reject
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>编辑外部联系人
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param title 标题
+ * @param emplId 需要编辑的员工id，不填，则为新增外部联系人
+ * @param name 需要新增的外部联系人的名字
+ * @param mobile 需要预填的手机号
+ * @param companyName 需要预填的公司名
+ * @param deptName 预填部门名字
+ * @param job 预填职位
+ * @param remark 备注信息
+ */
+export function editExternalUser(opt: {
+  title: string;
+  emplId: string;
+  name: string;
+  mobile: string;
+  companyName: string;
+  deptName: string;
+  job: string;
+  remark: string;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.editExternalUser({
+      ...opt,
+      /**
+       * @returns userId 需要编辑的员工id，不填，则为新增外部联系人
+       * @returns name 需要新增的外部联系人的名字，emplID为空时生效
+       * @returns mobile 需要预填的手机号，emplID为空时生效
+       * @returns companyName 需要预填的公司名，emplID为空时生效
+       * @returns deptName 预填部门名字，emplID为空时生效
+       * @returns job 预填职位，emplID为空时生效
+       * @returns remark	备注信息，emplId为空时生效
+       */
+      success: (res: {
+        userId: string,
+        name: string,
+        mobile: string,
+        companyName: string,
+        deptName: string,
+        job: string,
+        remark: string,
+      }) => {
+        resolve(res);
+      },
+      fail: reject
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>单选自定义联系人
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param title 标题
+ * @param users 一组员工userId
+ * @param isShowCompanyName 是否显示公司名称
+ * @param disabledUsers 不能选择的人；PC端不支持此参数
+ */
+export function chooseUserFromList({
+  title,
+  users,
+  isShowCompanyName = false,
+  disabledUsers,
+}: {
+  title: string;
+  users: Array<string>;
+  isShowCompanyName?: boolean;
+  disabledUsers: Array<string>;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.chooseUserFromList({
+      title,
+      users,
+      isShowCompanyName,
+      disabledUsers,
+       /**
+        * @returns name 姓名
+        * @returns avatar 头像图片url，可能为空
+        * @returns userId 即员工userid
+       */
+      success: (res: Array<object>) => {
+        resolve(res);
+      },
+      fail: reject
+    })
   })
 }
