@@ -388,3 +388,22 @@ export function switchTab(url: string) {
     })
   })
 }
+
+/**
+ * 下拉刷新操作
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/pulldown 界面=>下拉刷新}
+ * 在 Page 中自定义 onPullDownRefresh 函数，可以监听该页面用户的下拉刷新事件。
+ * 需要在页面对应的 .json 配置文件中配置 "pullRefresh": true 选项，才能开启下拉刷新事件。
+ */
+export function onPullDownRefresh() {
+  console.log('onPullDownRefresh', new Date());
+}
+
+/**
+ * 停止当前页面的下拉刷新
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/pulldown 界面=>下拉刷新}
+ * 当处理完数据刷新后，调用 dd.stopPullDownRefresh 可以停止当前页面的下拉刷新。
+ */
+export function stopPullDownRefresh() {
+  return dd.stopPullDownRefresh();
+}
