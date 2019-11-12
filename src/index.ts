@@ -411,7 +411,9 @@ export function datePicker(opt: {
       fail: reject,
     })
   })
+}
 
+/**
  * 下拉刷新操作
  * {@link https://ding-doc.dingtalk.com/doc#/dev/pulldown 界面=>下拉刷新}
  * 在 Page 中自定义 onPullDownRefresh 函数，可以监听该页面用户的下拉刷新事件。
