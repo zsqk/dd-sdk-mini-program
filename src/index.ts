@@ -49,10 +49,14 @@ export default {
   saveImage,
   compressImage,
   getImageInfo,
+  getRecorderManager,
+  getBackgroundAudioManager,
+  chooseVideo,
 };
 
 /** 毫秒 */
 type Millisecond = number;
+type second = number;
 
 /**
  * 警告框
@@ -1250,6 +1254,60 @@ export function getImageInfo(src: string) {
         width: number;
         height: number;
         path: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 获取当前小程序全局唯一的录音管理器 recordManager
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/vw45p8 录音管理}
+ */
+export function getRecorderManager() {
+  return dd.getRecorderManager();
+}
+
+/**
+ * 背景音频管理 获取当前小程序全局唯一的背景音频管理 backgroundAudioManager。当小程序切入后台时，音频可以背景播放。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ag4x5f 背景音频管理}
+ */
+export function getBackgroundAudioManager() {
+  return dd.getBackgroundAudioManager();
+}
+
+/**
+ * 拍摄视频或从手机相册中选视频
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/wsm3ig 视频}
+ * @param sourceType 视频来源
+ * @param maxDuration 最长视频拍摄事件，单位为秒
+ */
+export function chooseVideo({
+  sourceType = ['album', 'camera'],
+  maxDuration = 60,
+}: {
+  sourceType?: Array<string>;
+  maxDuration?: second;
+} = {}) {
+  return new Promise((resolve, reject) => {
+    dd.chooseVideo({
+      sourceType,
+      maxDuration,
+      /**
+       * @returns filePath 视频临时文件路径
+       * @returns duration 视频时间长度
+       * @returns size 视频数据大小
+       * @returns height 视频高度
+       * @returns width 视频宽度
+       */
+      success: (res: {
+        filePath: string;
+        duration: second;
+        size: number;
+        height: number;
+        width: number;
       }) => {
         resolve(res);
       },
