@@ -44,6 +44,11 @@ export default {
   getClipboard,
   setClipboard,
   vibrate,
+  chooseImage,
+  previewImage,
+  saveImage,
+  compressImage,
+  getImageInfo,
 };
 
 /** 毫秒 */
@@ -1129,6 +1134,125 @@ export function vibrate() {
   return new Promise((resolve, reject) => {
     dd.vibrate({
       success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 选择图片
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/media-image 多媒体=>图片}
+ * @param count 最大可选照片数，默认1张
+ * @param sourceType 相册选取或者拍照，默认 ['camera','album']
+ */
+export function chooseImage({
+  count = 1,
+  sourceType = ['camera','album'],
+}: {
+  count?: number;
+  sourceType?: Array<string>;
+} = {}) {
+  return new Promise((resolve, reject) => {
+    dd.chooseImage({
+      count,
+      sourceType,
+      success: (res: {
+        filePaths: Array<string>;
+      }) => {
+        resolve(res.filePaths);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 预览图片
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/media-image 多媒体=>图片}
+ * @param urls 要预览的图片链接列表
+ * @param current 当前显示图片索引，默认 0
+ */
+export function previewImage({
+  urls,
+  current = 0,
+}: {
+  urls: Array<any>;
+  current?: number;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.previewImage({
+      urls,
+      current,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 保存在线、本地临时或者永久地址图片到手机相册
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/media-image 多媒体=>图片}
+ * @param url 要保存的图片地址
+ */
+export function saveImage(url: string) {
+  return new Promise((resolve, reject) => {
+    dd.saveImage({
+      url,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 压缩图片
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/media-image 多媒体=>图片}
+ * @param filePaths 要压缩的图片地址数组
+ * @param compressLevel 压缩级别，支持 0 ~ 4 的整数，默认 4。compressLevel	说明 0 低质量 1	中等质量 2	高质量 3	不压缩 4	根据网络适应
+ */
+export function compressImage({
+  filePaths,
+  compressLevel = 4,
+}: {
+  filePaths: Array<string>;
+  compressLevel?: number;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.compressImage({
+      filePaths,
+      compressLevel,
+      /** @returns filePaths 压缩后的路径数组 */
+      success: (res: {
+        filePaths: Array<string>;
+      }) => {
+        resolve(res.filePaths);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 获取图片信息
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/media-image 多媒体=>图片}
+ * @param src 图片路径，目前支持：
+ */
+export function getImageInfo(src: string) {
+  return new Promise((resolve, reject) => {
+    dd.getImageInfo({
+      src,
+      /**
+       * @returns width 图片宽度（单位px）
+       * @returns height 图片高度（单位px）
+       * @returns path 图片本地路径
+       */
+      succrss: (res: {
+        width: number;
+        height: number;
+        path: string;
+      }) => {
+        resolve(res);
+      },
       fail: reject,
     })
   })
