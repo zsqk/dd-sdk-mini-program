@@ -33,6 +33,12 @@ export default {
   editExternalUser,
   chooseUserFromList,
   openLocation,
+  setStorage,
+  setStorageSync,
+  getStorage,
+  getStorageSync,
+  removeStorage,
+  removeStorageSync,
 };
 
 /** 毫秒 */
@@ -916,4 +922,94 @@ export function chooseUserFromList({
       fail: reject,
     })
   })
+}
+
+/**
+ * 将数据存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的数据
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/storage 缓存}
+ * @param key 缓存数据的key
+ * @param data 要缓存的数据
+ */
+export function setStorage(opt: {
+  key: string;
+  data: object | string;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.setStorage({
+      ...opt,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 同步将数据存储在本地缓存中指定的 key 中
+ * 同步数据IO操作可能会影响小程序流畅度，建议使用异步接口，或谨慎处理调用异常
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/storage 缓存}
+ * @param key 缓存数据的key
+ * @param data 要缓存的数据
+ */
+export function setStorageSync(opt: {
+  key: string;
+  data: object | string;
+}) {
+  return dd.setStorageSync(opt);
+}
+
+/**
+ * 获取缓存数据
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/storage 缓存}
+ * @param key 要缓存的数据
+ */
+export function getStorage(key: string) {
+  return new Promise((resolve, reject) => {
+    dd.getStorage({
+      key,
+      /** @returns data key对应的内容（不存在时返回 null） */
+      success: (res: {
+        data: object | string,
+      }) => {
+        resolve(res.data);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 同步获取缓存数据
+ * 同步数据IO操作可能会影响小程序流畅度，建议使用异步接口，或谨慎处理调用异常
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/storage 缓存}
+ * @param key 缓存数据的key
+ */
+export function getStorageSync(key: string) {
+  return dd.getStorageSync({key});
+}
+
+/**
+ * 删除缓存数据
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/storage 缓存}
+ * @param key 缓存数据的key
+ */
+export function removeStorage(key: string) {
+  return new Promise((resolve, reject) => {
+    dd.removeStorage({
+      key,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 同步删除缓存数据
+ * 同步数据IO操作可能会影响小程序流畅度，建议使用异步接口，或谨慎处理调用异常
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/storage 缓存}
+ * @param key 缓存数据的key
+ */
+export function removeStorageSync(key: string) {
+  return dd.removeStorageSync({
+    key,
+  });
 }
