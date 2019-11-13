@@ -32,6 +32,7 @@ export default {
   chooseExternalUsers,
   editExternalUser,
   chooseUserFromList,
+  openLocation,
 };
 
 /** 毫秒 */
@@ -59,7 +60,7 @@ export function alert({
       content,
       buttonText,
       success: resolve,
-      fail: reject
+      fail: reject,
     });
   });
 }
@@ -82,7 +83,7 @@ export function confirm(opt: {
     dd.confirm({
       ...opt,
       success: resolve,
-      fail: reject
+      fail: reject,
     });
   });
 }
@@ -180,7 +181,7 @@ export function getAuthCode() {
       success(res: any) {
         resolve(res.authCode);
       },
-      fail: reject
+      fail: reject,
     });
   });
 }
@@ -332,7 +333,7 @@ export function redirectTo(url: string) {
     dd.redirectTo({
       url,
       success: resolve,
-      fail: reject
+      fail: reject,
     });
   });
 }
@@ -540,6 +541,14 @@ export function getLocation({
     dd.getLocation({
       cacheTimeout,
       type,
+      /**
+       * @returns longitude 经度
+       * @returns latitude 纬度
+       * @returns accuracy 精确度，单位 米
+       * @returns province 省份(type>0生效)
+       * @returns city 城市(type>0生效)
+       * @returns address 格式化地址，如：北京市朝阳区南磨房镇北京国家广告产业园区(type>0生效)
+       */
       success: (res: {
         longitude: string,
         latitude: string,
@@ -550,8 +559,43 @@ export function getLocation({
       }) => {
         resolve(res);
       },
-      fail: reject
+      fail: reject,
     })
+  })
+}
+
+/**
+ * 使用内置地图查看位置
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/location 位置}
+ * @param longitude 经度
+ * @param latitude 纬度
+ * @param name 位置名称
+ * @param address 地址的详细说明
+ * @param scale 缩放比例，范围 3~19，默认为 15
+ */
+export function openLocation({
+  longitude,
+  latitude,
+  name,
+  address,
+  scale = 15,
+}: {
+  longitude: string;
+  latitude: string;
+  name: string;
+  address: string;
+  scale?: number;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.openLocation({
+      longitude,
+      latitude,
+      name,
+      address,
+      scale,
+      success: resolve,
+      fail: reject,
+    });
   })
 }
 
@@ -576,7 +620,7 @@ export function scan(type = 'qr') {
       }) => {
         resolve(res);
       },
-      fail: reject
+      fail: reject,
     })
   })
 }
@@ -629,7 +673,7 @@ export function complexChoose(opt: {
       }) => {
         resolve(res);
       },
-      fail: reject
+      fail: reject,
     })
   })
 }
@@ -672,7 +716,7 @@ export function chooseDepartments(opt: {
       }) => {
         resolve(res);
       },
-      fail: reject
+      fail: reject,
     })
   })
 }
@@ -692,7 +736,7 @@ export function createGroupChat(users: Array<string>) {
       }) => {
         resolve(res.id);
       },
-      fail: reject
+      fail: reject,
     })
   })
 }
@@ -730,7 +774,7 @@ export function choosePhonebook({
       success: (res: Array<object>) => {
         resolve(res);
       },
-      fail: reject
+      fail: reject,
     })
   })
 }
@@ -781,7 +825,7 @@ export function chooseExternalUsers({
       success: (res: Array<object>) => {
         resolve(res);
       },
-      fail: reject
+      fail: reject,
     })
   })
 }
@@ -831,7 +875,7 @@ export function editExternalUser(opt: {
       }) => {
         resolve(res);
       },
-      fail: reject
+      fail: reject,
     })
   })
 }
@@ -869,7 +913,7 @@ export function chooseUserFromList({
       success: (res: Array<object>) => {
         resolve(res);
       },
-      fail: reject
+      fail: reject,
     })
   })
 }
