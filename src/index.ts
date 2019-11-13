@@ -6,6 +6,7 @@ export default {
   getAuthCode,
   httpRequest,
   redirectTo,
+  getSystemInfo,
   getSystemInfoSync,
   createCanvasContext,
   createSelectorQuery,
@@ -39,6 +40,10 @@ export default {
   getStorageSync,
   removeStorage,
   removeStorageSync,
+  getNetworkType,
+  getClipboard,
+  setClipboard,
+  vibrate,
 };
 
 /** 毫秒 */
@@ -1059,4 +1064,72 @@ export function removeStorageSync(key: string) {
   return dd.removeStorageSync({
     key,
   });
+}
+
+/**
+ * 获取网络状态
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/network-type 网络状态}
+ */
+export function getNetworkType() {
+  return new Promise((resolve, reject) => {
+    dd.getNetworkType({
+      /**
+       * @retuens networkAvailable 网络是否可用
+       * @returns networkType 网络类型值 UNKNOWN / NOTREACHABLE / WIFI / 3G / 2G / 4G / WWAN
+       */
+      success: (res: {
+        networkAvailable: boolean;
+        networkType: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 剪切板功能
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/clipboard 剪切板}
+ */
+export function getClipboard() {
+  return new Promise((resolve, reject) => {
+    dd.getClipboard({
+      /**@returns text 剪切板数据 */
+      success: (res: {
+        text: string;
+      }) => {
+        resolve(res.text);
+      },
+      fail: reject,
+    });
+  })
+}
+
+/**
+ * 设置剪切板数据
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/clipboard 剪切板}
+ * @param text 剪切板数据
+ */
+export function setClipboard(text: string) {
+  return new Promise((resolve, reject) => {
+    dd.setClipboard({
+      text,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 调用震动功能
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/vibrate 震动}
+ */
+export function vibrate() {
+  return new Promise((resolve, reject) => {
+    dd.vibrate({
+      success: resolve,
+      fail: reject,
+    })
+  })
 }
