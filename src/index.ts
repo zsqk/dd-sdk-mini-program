@@ -52,6 +52,10 @@ export default {
   getRecorderManager,
   getBackgroundAudioManager,
   chooseVideo,
+  createDing,
+  callUsers,
+  showCallMenu,
+  checkBizCall,
 };
 
 /** 毫秒 */
@@ -1310,6 +1314,113 @@ export function chooseVideo({
         width: number;
       }) => {
         resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 分享
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/share-app 分享}
+ * 调用onShareAppMessage() 返回一个object
+ * @returns title 自定义分享标题
+ * @returns desc 自定义分享描述
+ * @returns path 自定义分享页面的路径，path中的自定义参数可在小程序生命周期的onLoad方法中获取（参数传递遵循http get的传参规则）
+ * @returns imageUrl 自定义分享图片(只支持网络图片路径)
+ * @returns fallbackUrl 可降级 H5 URL，仅适用于企业应用。当前钉钉桌面客户端不支持打开企业类小程序，配置此设置后，在桌面端访问此企业应用时，会打开fallbackUrl配置的H5 URL。
+ */
+
+ /**
+  * 发钉接口支持唤起DING、任务、日程等创建界面，目前发钉只支持客户端发钉，不支持直接通过服务端发钉。
+  * {@link https://ding-doc.dingtalk.com/doc#/dev/raeos8 Ding}
+  * @param users 用户列表，员工userid
+  * @param corpId 企业corpId
+  * @param alertType 钉提醒类型 0：电话, 1：短信, 2：应用内
+  * @param alertDate 钉提醒时间；非必填
+  * @param type Number为整数，钉类型 1：image 2：link
+  * @param attachment 附件信息
+  * @param text 消息体
+  * @param bizType 0：通知DING，1：任务，2：日程
+  * @param taskInfo 任务信息
+  * @param confInfo 日程信息
+  */
+export function createDing(opt: {
+  users: Array<string>;
+  corpId: string;
+  alertType: number;
+  alertDate: object;
+  type: number;
+  attachment?: object;
+  text?: string;
+  bizType?: number;
+  taskInfo?: object;
+  confInfo?: object;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.createDing({
+      ...opt,
+      success: (res: {
+        dingId: string;
+        text: string;
+        result:boolean;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 拨打钉钉电话
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/gr5lv4 电话}
+ * @param users 用户列表，工号
+ */
+export function callUsers(users: Array<string>) {
+  return new Promise((resolve, reject) => {
+    dd.callUsers({
+      users,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 唤起拨打电话菜单
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/gr5lv4 电话}
+ * @param phoneNumber 期望拨打的电话号码
+ * @param code 国家代号，中国是+86
+ * @param showDingCall 是否显示钉钉电话
+ */
+export function showCallMenu(opt: {
+  phoneNumber: string;
+  code: string;
+  showDingCall: boolean;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.showCallMenu({
+      ...opt,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 检查某企业办公电话开通状态
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/gr5lv4 电话}
+ * @param corpId 被检测企业的corpId
+ */
+export function checkBizCall(corpId: string) {
+  return new Promise((resolve, reject) => {
+    dd.checkBizCall({
+      corpId,
+      success: (res: {
+        isSupport:boolean;
+      }) => {
+        resolve(res.isSupport);
       },
       fail: reject,
     })
