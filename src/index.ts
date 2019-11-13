@@ -56,6 +56,15 @@ export default {
   callUsers,
   showCallMenu,
   checkBizCall,
+  pay,
+  saveFileToDingTalk,
+  previewFileInDingTalk,
+  uploadAttachmentToDingTalk,
+  chooseDingTalkDir,
+  chooseChatForNormalMsg,
+  chooseChat,
+  openChatByChatId,
+  openChatByUserId,
 };
 
 /** 毫秒 */
@@ -1422,6 +1431,263 @@ export function checkBizCall(corpId: string) {
       }) => {
         resolve(res.isSupport);
       },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 支付接口
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/bkgshb 支付}
+ * @param info 需要构建的订单信息
+ * info 参考支付宝文档：https://doc.open.alipay.com/doc2/detail.htm?spm=a219a.7629140.0.0.CKTNjZ&treeId=59&articleId=103663&docType=1
+ */
+export function pay(info: string) {
+  return new Promise((resolve, reject) => {
+    dd.pay({
+      info,
+      /**
+       * @returns memo 保留参数，一般无内容
+       * @returns result 本次操作返回的结果数据
+       * @returns resultStatus 本次操作的状态返回值，标识本次调用的结果 参考：https://doc.open.alipay.com/doc2/detail.htm?spm=a219a.7629140.0.0.MMxZUF&treeId=59&articleId=103671&docType=1
+       */
+      success: (res: {
+        memo: string;
+        result: string;
+        resultStatus: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 转存文件到钉盘
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/hu8d2w 钉盘}
+ * @param url 文件在第三方服务器上的url地址或通过提交文件上传事务、单步文件上传获取到的media_id
+ * @param name 文件保存的名字
+ */
+export function saveFileToDingTalk(opt: {
+  url: string;
+  name: string;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.saveFileToDingTalk({
+      ...opt,
+      /** data结构
+       {"data":
+          [
+            {
+              "spaceId": "" //空间id
+              "fileId": "", //文件id
+              "fileName": "", //文件名
+              "fileSize": 111111, //文件大小
+              "fileType": "", //文件类型
+            }
+          ]
+        }
+      */
+      success(res: any) {
+        resolve(res.data);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 钉盘文件预览
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/hu8d2w 钉盘}
+ * @param spaceId 空间ID
+ * @param fileId 文件ID
+ * @param fileName 文件名称
+ * @param fileSize 文件大小，字节数
+ * @param fileType 文件扩展名
+ */
+export function previewFileInDingTalk(opt: {
+  spaceId: string;
+  fileId: string;
+  fileName: string;
+  fileSize: number;
+  fileType: string;
+}) {
+  return dd.previewFileInDingTalk({...opt});
+}
+
+/**
+ * 上传附件到钉盘/从钉盘选择文件
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/hu8d2w 钉盘}
+ * @param types 支持上传附件的文件类型，至少一个；Android&iOS：最多支持四种类型["photo","camera","file","space"]； PC端：最多支持["photo","file","space"]
+ * @param image types这个数组里有photo、camera参数需要构建这个数据
+ * @param compress 是否压缩，默认为true
+ * @param multiple 是否多选，默认为false
+ * @param max 最多选择的图片数目，最多支持9张
+ * @param isCopy 1复制，0不复制(PC端不支持此参数)
+ * @param spaceId 企业自定义空间
+ * @param space types这个数组里有space参数需要构建这个数据
+ * @param file types这个数组里有file参数需要构建这个数据
+ */
+export function uploadAttachmentToDingTalk({
+  types,
+  image,
+  compress = true,
+  multiple = false,
+  max,
+  isCopy,
+  spaceId,
+  space,
+  file,
+}: {
+  types: Array<string>;
+  image: object,
+  compress?: boolean;
+  multiple?: boolean;
+  max: number;
+  isCopy: number;
+  spaceId: string;
+  space: Object;
+  file: Object;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.uploadAttachmentToDingTalk({
+      types,
+      image,
+      compress,
+      multiple,
+      max,
+      isCopy,
+      spaceId,
+      space,
+      file,
+      /**
+       * @returns type 支持上传附件的类型，目前有photo、camera、file、space
+       * @returns data 文件上传成功后的数据信息
+       * @returns spaceId 目标空间id
+       * @returns fileId 文件id
+       * @returns fileName 文件名称
+       * @returns fileType 文件类型
+       * @returns fileSize 文件大小
+       */
+      success: (res: {
+        type: string;
+        data: Array<object>;
+        spaceId: string;
+        fileId: string;
+        fileName: string;
+        fileType: string;
+        fileSize: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 选取钉盘目录
+ * 唤起钉盘选择器， 从用户当前的企业空间或个人空间选择一个目录， 用以保存文件等操作。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/hu8d2w 钉盘}
+ */
+export function chooseDingTalkDir() {
+  return new Promise((resolve, reject) => {
+    dd.chooseDingTalkDir({
+      /**
+       * @returns spaceId 被选中文件夹所在的钉盘空间id
+       * @returns path 被选中的文件夹路径， 例如“/测试/测试子目录/”
+       * @returns dirId 被选中的文件夹id
+       */
+      success: (res: {
+        spaceId: string;
+        path: string;
+        dirId: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 获取会话信息
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/epcw4e 会话}
+ * @param isConfirm 是否弹出确认窗口，默认为true
+ */
+export function chooseChatForNormalMsg(isConfirm = true) {
+  return new Promise((resolve, reject) => {
+    dd.chooseChatForNormalMsg({
+      isConfirm,
+      /**
+       * @returns cid 会话id（该cid和服务端开发文档-普通会话消息接口配合使用，而且只能使用一次，之后将失效）
+       * @returns title 会话标题
+       */
+      success: (res: {
+        cid: string;
+        title: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 选择会话
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/epcw4e 会话}
+ * @param isAllowCreateGroup 是否允许创建会话
+ * @param filterNotOwnerGroup 是否限制为自己创建的会话
+ */
+export function chooseChat(opt: {
+  isAllowCreateGroup: boolean;
+  filterNotOwnerGroup: boolean;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.chooseChat({
+      ...opt,
+      /**
+       * @returns chatId 会话id（该会话cid永久有效）
+       * @returns title 会话标题
+       */
+      success: (res: {
+        chatId: string;
+        title: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 根据chatId跳转到对应会话
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/epcw4e 会话}
+ * @param chatId 会话ID
+ */
+export function openChatByChatId(chatId: string) {
+  return new Promise((resolve, reject) => {
+    dd.openChatByChatId({
+      chatId,
+      success:resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 打开与某个用户的聊天页面（单聊会话）
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/epcw4e 会话}
+ * @param userId 用户工号
+ */
+export function openChatByUserId(userId: string) {
+  return new Promise((resolve, reject) => {
+    dd.openChatByUserId({
+      userId,
+      success:resolve,
       fail: reject,
     })
   })
