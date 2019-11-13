@@ -309,6 +309,53 @@ function getHeaders(origin: any) {
  * 获取系统信息
  * {@link https://ding-doc.dingtalk.com/doc#/dev/system-info 设备=>系统信息}.
  */
+export function getSystemInfo() {
+  return new Promise((resolve, reject) => {
+    dd.getSystemInfo({
+      /**
+       * @returns model 手机型号
+       * @returns pixelRatio 设备像素比
+       * @returns windowWidth 窗口宽度
+       * @returns windowHeight 窗口高度
+       * @returns language 钉钉设置的语言
+       * @returns version 钉钉版本号
+       * @returns storage 设备磁盘容量
+       * @returns currentBattery 当前电量百分比
+       * @returns system 系统版本
+       * @returns platform 系统名：Android，iOS
+       * @returns screenWidth 屏幕宽度
+       * @returns screenHeight 屏幕高度
+       * @returns brand 手机品牌
+       * @returns fontSizeSetting 用户设置字体大小
+       */
+      success: (res: {
+        model: string;
+        pixelRatio: number;
+        windowWidth: number;
+        windowHeight: number;
+        language: string;
+        version: string;
+        storage: string;
+        currentBattery: string;
+        system: string;
+        platform: string;
+        screenWidth: number;
+        screenHeight: number;
+        brand: string;
+        fontSizeSetting: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 获取系统信息
+ * 返回值同 getSystemInfo success 回调参数
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/system-info 设备=>系统信息}.
+ */
 export function getSystemInfoSync() {
   return dd.getSystemInfoSync();
 }
