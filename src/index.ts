@@ -1451,7 +1451,8 @@ export function pay(info: string): Promise<{
   /** 本次操作返回的结果数据 */
   result: string;
   /** 本次操作的状态返回值，标识本次调用的结果 参考：
-   * https://doc.open.alipay.com/doc2/detail.htm?treeId=59&articleId=103671&docType=1 */
+   * https://doc.open.alipay.com/doc2/detail.htm?treeId=59&articleId=103671&docType=1
+   */
   resultStatus: string;
 }> {
   return new Promise((resolve, reject) => {
@@ -1618,7 +1619,8 @@ export function chooseDingTalkDir(): Promise<{
  */
 export function chooseChatForNormalMsg(isConfirm = true): Promise<{
   /**  会话id
-   * （该cid和服务端开发文档-普通会话消息接口配合使用，而且只能使用一次，之后将失效）*/
+   * （该cid和服务端开发文档-普通会话消息接口配合使用，而且只能使用一次，之后将失效）
+   */
   cid: string;
   /**  会话标题 */
   title: string;
