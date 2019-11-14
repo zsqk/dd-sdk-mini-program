@@ -65,6 +65,17 @@ export default {
   chooseChat,
   openChatByChatId,
   openChatByUserId,
+  connectSocket,
+  onSocketOpen,
+  offSocketOpen,
+  onSocketError,
+  offSocketError,
+  sendSocketMessage,
+  onSocketMessage,
+  offSocketMessage,
+  closeSocket,
+  onSocketClose,
+  offSocketClose,
 };
 
 /** 毫秒 */
@@ -1692,3 +1703,130 @@ export function openChatByUserId(userId: string) {
     })
   })
 }
+
+/**
+ * 创建一个 WebSocket 的连接；一个钉钉小程序同时只能保留一个 WebSocket 连接，如果当前已存在 WebSocket 连接，会自动关闭该连接，并重新创建一个新的 WebSocket 连接。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @param url 目标服务器url
+ * @param data 请求的参数
+ * @param header 设置请求的头部
+ */
+export function connectSocket(opt: {
+  url: string;
+  data?: object;
+  header?: object;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.connectSocket({
+      ...opt,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 监听WebSocket连接打开事件
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @fun WebSocket 连接打开事件的回调函数
+ */
+export function onSocketOpen(fun: Function) {
+  return Promise.resolve(dd.onSocketOpen(fun));
+}
+
+/**
+ * 取消监听WebSocket连接打开事件。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @fun 回调函数
+ */
+export function offSocketOpen(fun: Function) {
+  return Promise.resolve(dd.offSocketOpen(fun));
+}
+
+/**
+ * 监听WebSocket错误。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @fun WebSocket 错误事件的回调函数
+ */
+export function onSocketError(fun: Function) {
+  return Promise.resolve(dd.onSocketError(fun));
+}
+
+/**
+ * 取消监听WebSocket错误。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @fun 回调函数
+ */
+export function offSocketError(fun: Function) {
+  return Promise.resolve(dd.offSocketError(fun));
+}
+
+/**
+ * 通过 WebSocket 连接发送数据，需要先使用上述介绍的dd.connectSocket发起连接，再使用dd.onSocketsOpen回调之后再发送数据
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @param data 需要发送的内容：普通的文本内容 String 或者经 base64 编码后的 String
+ * @param isBuffer 如果需要发送二进制数据，需要将入参数据经 base64 编码成 String 后赋值 data，同时将此字段设置为true，否则如果是普通的文本内容 String，不需要设置此字段
+ */
+export function sendSocketMessage(opt: {
+  data: string;
+  isBuffer?: boolean;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.sendSocketMessage({
+      ...opt,
+      success: resolve,
+      fail: reject,
+    })
+  }) 
+}
+
+/**
+ * 监听WebSocket接受到服务器的消息事件。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @fun WebSocket 接受到服务器的消息事件的回调函数
+ * @returns 回调返回值 data {String/ArrayBuffer} 服务器返回的消息：普通的文本 String 或者经 base64 编码后的 String
+ * @returns 回调返回值 isBuffer {Boolean} 如果此字段值为true，data字段表示接收到的经过了 base64 编码后的 String，否则 data 字段表示接收到的普通 String 文本。
+ */
+export function onSocketMessage(fun: Function) {
+  return Promise.resolve(dd.onSocketMessage(fun));
+}
+
+/**
+ * 取消监听WebSocket接受到服务器的消息事件。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ */
+export function offSocketMessage() {
+  return dd.offSocketMessage();
+}
+
+/**
+ * 取消监听WebSocket接受到服务器的消息事件。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ */
+export function closeSocket() {
+  return new Promise((resolve, reject) => {
+    dd.closeSocket({
+      success: resolve,
+      fail: reject,
+    })
+  });
+}
+
+
+/**
+ * 取消监听WebSocket接受到服务器的消息事件。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @fun WebSocket 连接关闭事件的回调函数
+ */
+export function onSocketClose(fun: Function) {
+  return Promise.resolve(dd.onSocketClose(fun));
+}
+
+/**
+ * 取消监听WebSocket关闭。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ */
+export function offSocketClose() {
+  return dd.offSocketClose();
+}
+
