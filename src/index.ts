@@ -6,6 +6,7 @@ export default {
   getAuthCode,
   httpRequest,
   redirectTo,
+  getSystemInfo,
   getSystemInfoSync,
   createCanvasContext,
   createSelectorQuery,
@@ -22,10 +23,63 @@ export default {
   switchTab,
   datePicker,
   createAnimation,
+  hideKeyboard,
+  pageScrollTo,
+  complexChoose,
+  chooseDepartments,
+  createGroupChat,
+  choosePhonebook,
+  chooseExternalUsers,
+  editExternalUser,
+  chooseUserFromList,
+  openLocation,
+  setStorage,
+  setStorageSync,
+  getStorage,
+  getStorageSync,
+  removeStorage,
+  removeStorageSync,
+  getNetworkType,
+  getClipboard,
+  setClipboard,
+  vibrate,
+  chooseImage,
+  previewImage,
+  saveImage,
+  compressImage,
+  getImageInfo,
+  getRecorderManager,
+  getBackgroundAudioManager,
+  chooseVideo,
+  createDing,
+  callUsers,
+  showCallMenu,
+  checkBizCall,
+  pay,
+  saveFileToDingTalk,
+  previewFileInDingTalk,
+  uploadAttachmentToDingTalk,
+  chooseDingTalkDir,
+  chooseChatForNormalMsg,
+  chooseChat,
+  openChatByChatId,
+  openChatByUserId,
+  connectSocket,
+  onSocketOpen,
+  offSocketOpen,
+  onSocketError,
+  offSocketError,
+  sendSocketMessage,
+  onSocketMessage,
+  offSocketMessage,
+  closeSocket,
+  onSocketClose,
+  offSocketClose,
 };
 
 /** 毫秒 */
 type Millisecond = number;
+type Second = number;
 
 /**
  * 警告框
@@ -49,7 +103,7 @@ export function alert({
       content,
       buttonText,
       success: resolve,
-      fail: reject
+      fail: reject,
     });
   });
 }
@@ -72,7 +126,7 @@ export function confirm(opt: {
     dd.confirm({
       ...opt,
       success: resolve,
-      fail: reject
+      fail: reject,
     });
   });
 }
@@ -150,8 +204,8 @@ export function showActionSheet(opt: {
   return new Promise((resolve, reject) => {
     dd.showActionSheet({
       ...opt,
-      /** @returns index 被点击的按钮的索引，从0开始。点击取消或蒙层时返回 -1 */
       success: (res: {
+        /** 被点击的按钮的索引，从0开始。点击取消或蒙层时返回 -1 */
         index: number,
       }) => {
         resolve(res.index);
@@ -170,7 +224,7 @@ export function getAuthCode() {
       success(res: any) {
         resolve(res.authCode);
       },
-      fail: reject
+      fail: reject,
     });
   });
 }
@@ -233,15 +287,13 @@ export function uploadFile(opt: {
   return new Promise((resolve, reject) => {
     dd.uploadFile({
       ...opt,
-      /**
-       * @returns data 服务器返回的数据
-       * @returns statusCode HTTP 状态码
-       * @returns header 服务器返回的 header
-       */
       success: (res: {
+        /** 服务器返回的数据 */
         data: string,
+        /**  HTTP 状态码 */
         statusCode: string,
-        header: any
+        /** 服务器返回的 header */
+        header: any,
       }) => {
         resolve(res);
       },
@@ -263,11 +315,11 @@ export function downloadFile(opt: {
   return new Promise((resolve, reject) => {
     dd.downloadFile({
       ...opt,
-      /** @returns filePath 文件临时存放的位置 */
       success: (res: {
+        /** 文件临时存放的位置 */
         filePath: string,
       }) => {
-        resolve(res);
+        resolve(res.filePath);
       },
       fail: reject,
     })
@@ -290,6 +342,51 @@ function getHeaders(origin: any) {
 
 /**
  * 获取系统信息
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/system-info 设备=>系统信息}.
+ */
+export function getSystemInfo() {
+  return new Promise((resolve, reject) => {
+    dd.getSystemInfo({
+      success: (res: {
+        /** 手机型号 */
+        model: string;
+        /** 设备像素比 */
+        pixelRatio: number;
+        /** 窗口宽度 */
+        windowWidth: number;
+        /** 窗口高度 */
+        windowHeight: number;
+        /** 钉钉设置的语言 */
+        language: string;
+        /** 钉钉版本号 */
+        version: string;
+        /** 设备磁盘容量 */
+        storage: string;
+        /** 当前电量百分比 */
+        currentBattery: string;
+        /** 系统版本 */
+        system: string;
+        /** 系统名：Android，iOS */
+        platform: string;
+        /** 屏幕宽度 */
+        screenWidth: number;
+        /** 屏幕高度 */
+        screenHeight: number;
+        /** 手机品牌 */
+        brand: string;
+        /** 用户设置字体大小 */
+        fontSizeSetting: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 获取系统信息
+ * 返回值同 getSystemInfo success 回调参数
  * {@link https://ding-doc.dingtalk.com/doc#/dev/system-info 设备=>系统信息}.
  */
 export function getSystemInfoSync() {
@@ -322,7 +419,7 @@ export function redirectTo(url: string) {
     dd.redirectTo({
       url,
       success: resolve,
-      fail: reject
+      fail: reject,
     });
   });
 }
@@ -424,9 +521,11 @@ export function datePicker(opt: {
   return new Promise((resolve, reject) => {
     dd.datePicker({
       ...opt,
-      /** @returns date 选择的日期 */
-      success(res: any) {
-        resolve(res.date);
+      success: (res: {
+        /** 选择的日期 */
+        data: string;
+      }) => {
+        resolve(res.data);
       },
       fail: reject,
     })
@@ -478,3 +577,1223 @@ export function createAnimation({
     transformOrigin,
   })
 }
+
+/**
+ * 监听键盘弹起事件，并返回键盘高度
+ * 键盘高度可以在回调参数的data.height参数中取到，单位为px。
+ * 需要在page中设置该回调。
+ * 调用 onKeyboardShow()
+ */
+
+/**
+ * 监听键盘收起事件。
+ * 需要在page中设置该回调。
+ * 调用 onKeyboardHide()
+ */
+
+/**
+ * 隐藏键盘
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-hidekeyboard 界面=>键盘}
+ */
+export function hideKeyboard() {
+  return dd.hideKeyboard();
+}
+
+/**
+ * 滚动到页面的目标位置
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/scroll 界面=>滚动}
+ * @param scrollTop 滚动到页面的目标位置，单位 px
+ */
+export function pageScrollTo(scrollTop: number) {
+  return dd.pageScrollTo({
+    scrollTop,
+  })
+}
+
+/**
+ * 获取用户当前的地理位置信息
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/location 位置}
+ * @param cacheTimeout 钉钉客户端经纬度定位缓存过期时间，单位秒。默认 30s。使用缓存会加快定位速度，缓存过期会重新定位。
+ * @param type 0：获取经纬度； 1：默认，获取经纬度和详细到区县级别的逆地理编码数据
+ */
+export function getLocation({
+  cacheTimeout = 30,
+  type,
+}: {
+  cacheTimeout?: Number,
+  type?: number,
+} = {}) {
+  return new Promise((resolve, reject) => {
+    dd.getLocation({
+      cacheTimeout,
+      type,
+      success: (res: {
+        /** 经度 */
+        longitude: string,
+        /** 纬度 */
+        latitude: string,
+        /** 精确度，单位 米 */
+        accuracy: string,
+        /** 省份(type>0生效) */
+        province: string,
+        /** 城市(type>0生效) */
+        city: string,
+        /** 格式化地址，如：北京市朝阳区南磨房镇北京国家广告产业园区(type>0生效) */
+        address: string,
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 使用内置地图查看位置
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/location 位置}
+ * @param longitude 经度
+ * @param latitude 纬度
+ * @param name 位置名称
+ * @param address 地址的详细说明
+ * @param scale 缩放比例，范围 3~19，默认为 15
+ */
+export function openLocation({
+  longitude,
+  latitude,
+  name,
+  address,
+  scale = 15,
+}: {
+  longitude: string;
+  latitude: string;
+  name: string;
+  address: string;
+  scale?: number;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.openLocation({
+      longitude,
+      latitude,
+      name,
+      address,
+      scale,
+      success: resolve,
+      fail: reject,
+    });
+  })
+}
+
+/**
+ * 调用扫一扫功能
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/vglq4x 开放接口=>扫码}
+ * @param type 扫码样式(默认 qr)：1, qr，扫码框样式为二维码扫码框 2.bar，扫码样式为条形码扫码框
+ */
+export function scan(type = 'qr') {
+  return new Promise((resolve, reject) => {
+    dd.scan({
+      type,
+      success: (res: {
+        /** 扫码所得数据 */
+        code: string,
+        /** 扫描二维码时返回二维码数据 */
+        qrCode: string,
+        /** 扫描条形码时返回条形码数据 */
+        barCode: string,
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>选人和部门
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param title 标题
+ * @param multiple 是否多选
+ * @param limitTips 超过限定人数返回提示
+ * @param maxUsers 	最大可选人数
+ * @param pickedUsers 已选用户，值为userId列表
+ * @param pickedDepartments 已选部门
+ * @param disabledUsers 不可选用户，值为userId列表
+ * @param disabledDepartments 不可选部门
+ * @param requiredUsers 必选用户（不可取消选中状态），值为userId列表
+ * @param requiredDepartments 必选部门（不可取消选中状态）
+ * @param permissionType 选人权限，目前只有GLOBAL这个参数
+ * @param responseUserOnly true：返回人员信息 false：返回人员和部门信息
+ * @param startWithDepartmentId 仅支持0和-1两个值： 0表示从企业最上层开始； -1表示从自己部门开始，为-1时仅在Android端生效
+ */
+export function complexChoose(opt: {
+  title: string;
+  multiple: boolean;
+  limitTips: string;
+  maxUsers: number;
+  pickedUsers: Array<string>;
+  pickedDepartments: Array<string>;
+  disabledUsers: Array<string>;
+  disabledDepartments: Array<string>;
+  requiredUsers: Array<string>;
+  requiredDepartments: Array<string>;
+  permissionType: string;
+  responseUserOnly: boolean;
+  startWithDepartmentId: number;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.complexChoose({
+      ...opt,
+      success: (res: {
+        /** 选择人数 */
+        selectedCount: number,
+        /** 返回选人的列表，列表中的对象包含name（用户名），avatar（用户头像），userId（用户工号）三个字段 */
+        users: Array<object>,
+        /**  返回已选部门列表，列表中每个对象包含id（部门id）、name（部门名称）、count（部门人数） */
+        departments: Array<object>,
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>选择部门信息
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param title 标题
+ * @param multiple 是否多选
+ * @param limitTips 超过限定人数返回提示
+ * @param maxDepartments 	最大可选部门数
+ * @param pickedDepartments 已选部门
+ * @param disabledDepartments 不可选部门
+ * @param requiredDepartments 必选部门（不可取消选中状态）
+ * @param permissionType 选人权限，目前只有GLOBAL这个参数
+ */
+export function chooseDepartments(opt: {
+  title: string;
+  multiple: boolean;
+  limitTips: string;
+  maxDepartments: number;
+  pickedDepartments: Array<string>;
+  disabledDepartments: Array<string>;
+  requiredDepartments: Array<string>;
+  permissionType: string;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.chooseDepartments({
+      ...opt,
+      success: (res: {
+        /** 选择人数 */
+        userCount: number,
+        /** 选择的部门数 */
+        departmentsCount: number,
+        /** 返回已选部门列表，列表中每个对象包含id（部门id）、name（部门名称）、number（部门人数） */
+        departments: Array<object>,
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>创建企业群聊天
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param users 默认选中的userId列表
+ */
+export function createGroupChat(users: Array<string>) {
+  return new Promise((resolve, reject) => {
+    dd.createGroupChat({
+      users,
+      success: (res: {
+        /** 企业群id */
+        id: Array<string>
+      }) => {
+        resolve(res.id);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>选取手机通讯录
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param title 如果你需要修改选人页面的title，可以在这里赋值
+ * @param multiple 是否多选： true多选，false单选； 默认true
+ * @param maxUsers 人数限制，当multiple为true才生效，可选范围1-1500
+ * @param limitTips 超过人数限制的提示语可以用这个字段自定义
+ */
+export function choosePhonebook({
+  title,
+  multiple = true,
+  limitTips,
+  maxUsers,
+}: {
+  title: string;
+  multiple?: boolean;
+  limitTips: string;
+  maxUsers: number;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.choosePhonebook({
+      title,
+      multiple,
+      limitTips,
+      maxUsers,
+      success: (res: [{
+        /** 姓名 */
+        name: string;
+        /** 头像图片id，可能为空 */
+        avatar: string;
+        /** 用户手机号 */
+        mobile: string;
+      }]) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>选择外部联系人
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param title 选择联系人标题
+ * @param multiple 是否多选： true多选，false单选； 默认true
+ * @param maxUsers 最多选择的人数
+ * @param limitTips 限制选择人数，0为不限制
+ * @param pickedUsers 默认选中的人，值为userId列表。注意:已选中可以取消
+ * @param disabledUsers 不能选的人，值为userId列表
+ * @param requiredUsers 默认选中且不可取消选中状态的人，值为userId列表
+ */
+export function chooseExternalUsers({
+  title,
+  multiple = true,
+  limitTips,
+  maxUsers,
+  pickedUsers,
+  disabledUsers,
+  requiredUsers,
+}: {
+  title: string;
+  multiple?: boolean;
+  limitTips: string;
+  maxUsers: number;
+  pickedUsers: Array<string>;
+  disabledUsers: Array<string>;
+  requiredUsers: Array<string>;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.chooseExternalUsers({
+      title,
+      multiple,
+      limitTips,
+      maxUsers,
+      pickedUsers,
+      disabledUsers,
+      requiredUsers,
+      success: (res: [{
+        /** 姓名 */
+        name: string;
+        /** 头像图片url，可能为空 */
+        avatar: string;
+        /** 用户id */
+        userId: string;
+        /** 公司名字 */
+        orgName: string;
+      }]) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>编辑外部联系人
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param title 标题
+ * @param emplId 需要编辑的员工id，不填，则为新增外部联系人
+ * @param name 需要新增的外部联系人的名字
+ * @param mobile 需要预填的手机号
+ * @param companyName 需要预填的公司名
+ * @param deptName 预填部门名字
+ * @param job 预填职位
+ * @param remark 备注信息
+ */
+export function editExternalUser(opt: {
+  title: string;
+  emplId: string;
+  name: string;
+  mobile: string;
+  companyName: string;
+  deptName: string;
+  job: string;
+  remark: string;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.editExternalUser({
+      ...opt,
+      success: (res: {
+        /** 需要编辑的员工id，不填，则为新增外部联系人 */
+        userId: string,
+        /** 需要新增的外部联系人的名字，emplID为空时生效 */
+        name: string,
+        /** 需要预填的手机号，emplID为空时生效 */
+        mobile: string,
+        /** 需要预填的公司名，emplID为空时生效 */
+        companyName: string,
+        /** 预填部门名字，emplID为空时生效 */
+        deptName: string,
+        /** 预填职位，emplID为空时生效 */
+        job: string,
+        /** 备注信息，emplId为空时生效 */
+        remark: string,
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 通讯录选人===>单选自定义联系人
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/yskexi 开放接口=>通讯录选人}
+ * @param title 标题
+ * @param users 一组员工userId
+ * @param isShowCompanyName 是否显示公司名称
+ * @param disabledUsers 不能选择的人；PC端不支持此参数
+ */
+export function chooseUserFromList({
+  title,
+  users,
+  isShowCompanyName = false,
+  disabledUsers,
+}: {
+  title: string;
+  users: Array<string>;
+  isShowCompanyName?: boolean;
+  disabledUsers: Array<string>;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.chooseUserFromList({
+      title,
+      users,
+      isShowCompanyName,
+      disabledUsers,
+      success: (res: [{
+        /** 姓名 */
+        name: string;
+        /** 头像图片url，可能为空 */
+        avatar: string;
+        /** 即员工userid */
+        userId: string;
+      }]) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 将数据存储在本地缓存中指定的 key 中，会覆盖掉原来该 key 对应的数据
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/storage 缓存}
+ * @param key 缓存数据的key
+ * @param data 要缓存的数据
+ */
+export function setStorage(opt: {
+  key: string;
+  data: object | string;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.setStorage({
+      ...opt,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 同步将数据存储在本地缓存中指定的 key 中
+ * 同步数据IO操作可能会影响小程序流畅度，建议使用异步接口，或谨慎处理调用异常
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/storage 缓存}
+ * @param key 缓存数据的key
+ * @param data 要缓存的数据
+ */
+export function setStorageSync(opt: {
+  key: string;
+  data: object | string;
+}) {
+  return dd.setStorageSync(opt);
+}
+
+/**
+ * 获取缓存数据
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/storage 缓存}
+ * @param key 要缓存的数据
+ */
+export function getStorage(key: string) {
+  return new Promise((resolve, reject) => {
+    dd.getStorage({
+      key,
+      success: (res: {
+        /** key对应的内容（不存在时返回 null） */
+        data: object | string,
+      }) => {
+        resolve(res.data);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 同步获取缓存数据
+ * 同步数据IO操作可能会影响小程序流畅度，建议使用异步接口，或谨慎处理调用异常
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/storage 缓存}
+ * @param key 缓存数据的key
+ */
+export function getStorageSync(key: string) {
+  return dd.getStorageSync({key});
+}
+
+/**
+ * 删除缓存数据
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/storage 缓存}
+ * @param key 缓存数据的key
+ */
+export function removeStorage(key: string) {
+  return new Promise((resolve, reject) => {
+    dd.removeStorage({
+      key,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 同步删除缓存数据
+ * 同步数据IO操作可能会影响小程序流畅度，建议使用异步接口，或谨慎处理调用异常
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/storage 缓存}
+ * @param key 缓存数据的key
+ */
+export function removeStorageSync(key: string) {
+  return dd.removeStorageSync({
+    key,
+  });
+}
+
+/**
+ * 获取网络状态
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/network-type 网络状态}
+ */
+export function getNetworkType() {
+  return new Promise((resolve, reject) => {
+    dd.getNetworkType({
+      success: (res: {
+        /** 网络是否可用 */
+        networkAvailable: boolean;
+        /** 网络类型值 UNKNOWN / NOTREACHABLE / WIFI / 3G / 2G / 4G / WWAN */
+        networkType: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 剪切板功能
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/clipboard 剪切板}
+ */
+export function getClipboard() {
+  return new Promise((resolve, reject) => {
+    dd.getClipboard({
+      success: (res: {
+        /** 剪切板数据 */
+        text: string;
+      }) => {
+        resolve(res.text);
+      },
+      fail: reject,
+    });
+  })
+}
+
+/**
+ * 设置剪切板数据
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/clipboard 剪切板}
+ * @param text 剪切板数据
+ */
+export function setClipboard(text: string) {
+  return new Promise((resolve, reject) => {
+    dd.setClipboard({
+      text,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 调用震动功能
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/vibrate 震动}
+ */
+export function vibrate() {
+  return new Promise((resolve, reject) => {
+    dd.vibrate({
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 选择图片
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/media-image 多媒体=>图片}
+ * @param count 最大可选照片数，默认1张
+ * @param sourceType 相册选取或者拍照，默认 ['camera','album']
+ */
+export function chooseImage({
+  count = 1,
+  sourceType = ['camera','album'],
+}: {
+  count?: number;
+  sourceType?: Array<string>;
+} = {}) {
+  return new Promise((resolve, reject) => {
+    dd.chooseImage({
+      count,
+      sourceType,
+      success: (res: {
+        filePaths: Array<string>;
+      }) => {
+        resolve(res.filePaths);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 预览图片
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/media-image 多媒体=>图片}
+ * @param urls 要预览的图片链接列表
+ * @param current 当前显示图片索引，默认 0
+ */
+export function previewImage({
+  urls,
+  current = 0,
+}: {
+  urls: Array<any>;
+  current?: number;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.previewImage({
+      urls,
+      current,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 保存在线、本地临时或者永久地址图片到手机相册
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/media-image 多媒体=>图片}
+ * @param url 要保存的图片地址
+ */
+export function saveImage(url: string) {
+  return new Promise((resolve, reject) => {
+    dd.saveImage({
+      url,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 压缩图片
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/media-image 多媒体=>图片}
+ * @param filePaths 要压缩的图片地址数组
+ * @param compressLevel 压缩级别，支持 0 ~ 4 的整数，默认 4。compressLevel	说明 0 低质量 1	中等质量 2	高质量 3	不压缩 4	根据网络适应
+ */
+export function compressImage({
+  filePaths,
+  compressLevel = 4,
+}: {
+  filePaths: Array<string>;
+  compressLevel?: number;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.compressImage({
+      filePaths,
+      compressLevel,
+      success: (res: {
+        /** 压缩后的路径数组 */
+        filePaths: Array<string>;
+      }) => {
+        resolve(res.filePaths);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 获取图片信息
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/media-image 多媒体=>图片}
+ * @param src 图片路径，目前支持：
+ */
+export function getImageInfo(src: string) {
+  return new Promise((resolve, reject) => {
+    dd.getImageInfo({
+      src,
+      succrss: (res: {
+        /** 图片宽度（单位px） */
+        width: number;
+        /** 图片高度（单位px） */
+        height: number;
+        /** 图片本地路径 */
+        path: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 获取当前小程序全局唯一的录音管理器 recordManager
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/vw45p8 录音管理}
+ */
+export function getRecorderManager() {
+  return dd.getRecorderManager();
+}
+
+/**
+ * 背景音频管理 获取当前小程序全局唯一的背景音频管理 backgroundAudioManager。当小程序切入后台时，音频可以背景播放。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ag4x5f 背景音频管理}
+ */
+export function getBackgroundAudioManager() {
+  return dd.getBackgroundAudioManager();
+}
+
+/**
+ * 拍摄视频或从手机相册中选视频
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/wsm3ig 视频}
+ * @param sourceType 视频来源
+ * @param maxDuration 最长视频拍摄事件，单位为秒
+ */
+export function chooseVideo({
+  sourceType = ['album', 'camera'],
+  maxDuration = 60,
+}: {
+  sourceType?: Array<string>;
+  maxDuration?: Second;
+} = {}) {
+  return new Promise((resolve, reject) => {
+    dd.chooseVideo({
+      sourceType,
+      maxDuration,
+      success: (res: {
+        /** 视频临时文件路径 */
+        filePath: string;
+        /** 视频时间长度 */
+        duration: Second;
+        /** 视频数据大小 */
+        size: number;
+        /** 视频高度 */
+        height: number;
+        /** 视频宽度 */
+        width: number;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 分享
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/share-app 分享}
+ * 调用onShareAppMessage() 返回一个object {title 自定义分享标题; desc 自定义分享描述; path 自定义分享页面的路径，path中的自定义参数可在小程序生命周期的onLoad方法中获取（参数传递遵循http get的传参规则）;imageUrl 自定义分享图片(只支持网络图片路径}fallbackUrl 可降级 H5 URL，仅适用于企业应用。当前钉钉桌面客户端不支持打开企业类小程序，配置此设置后，在桌面端访问此企业应用时，会打开fallbackUrl配置的H5 URL。
+ */
+
+ /**
+  * 发钉接口支持唤起DING、任务、日程等创建界面，目前发钉只支持客户端发钉，不支持直接通过服务端发钉。
+  * {@link https://ding-doc.dingtalk.com/doc#/dev/raeos8 Ding}
+  * @param users 用户列表，员工userid
+  * @param corpId 企业corpId
+  * @param alertType 钉提醒类型 0：电话, 1：短信, 2：应用内
+  * @param alertDate 钉提醒时间；非必填
+  * @param type Number为整数，钉类型 1：image 2：link
+  * @param attachment 附件信息
+  * @param text 消息体
+  * @param bizType 0：通知DING，1：任务，2：日程
+  * @param taskInfo 任务信息
+  * @param confInfo 日程信息
+  */
+export function createDing(opt: {
+  users: Array<string>;
+  corpId: string;
+  alertType: number;
+  alertDate: object;
+  type: number;
+  attachment?: object;
+  text?: string;
+  bizType?: number;
+  taskInfo?: object;
+  confInfo?: object;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.createDing({
+      ...opt,
+      success: (res: {
+        dingId: string;
+        text: string;
+        result:boolean;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 拨打钉钉电话
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/gr5lv4 电话}
+ * @param users 用户列表，工号
+ */
+export function callUsers(users: Array<string>) {
+  return new Promise((resolve, reject) => {
+    dd.callUsers({
+      users,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 唤起拨打电话菜单
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/gr5lv4 电话}
+ * @param phoneNumber 期望拨打的电话号码
+ * @param code 国家代号，中国是+86
+ * @param showDingCall 是否显示钉钉电话
+ */
+export function showCallMenu(opt: {
+  phoneNumber: string;
+  code: string;
+  showDingCall: boolean;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.showCallMenu({
+      ...opt,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 检查某企业办公电话开通状态
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/gr5lv4 电话}
+ * @param corpId 被检测企业的corpId
+ */
+export function checkBizCall(corpId: string) {
+  return new Promise((resolve, reject) => {
+    dd.checkBizCall({
+      corpId,
+      success: (res: {
+        isSupport:boolean;
+      }) => {
+        resolve(res.isSupport);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 支付接口
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/bkgshb 支付}
+ * @param info 需要构建的订单信息
+ * info 参考支付宝文档：https://doc.open.alipay.com/doc2/detail.htm?spm=a219a.7629140.0.0.CKTNjZ&treeId=59&articleId=103663&docType=1
+ */
+export function pay(info: string) {
+  return new Promise((resolve, reject) => {
+    dd.pay({
+      info,
+      success: (res: {
+        /** 保留参数，一般无内容 */
+        memo: string;
+        /** 本次操作返回的结果数据 */
+        result: string;
+        /** 本次操作的状态返回值，标识本次调用的结果 参考：https://doc.open.alipay.com/doc2/detail.htm?spm=a219a.7629140.0.0.MMxZUF&treeId=59&articleId=103671&docType=1 */
+        resultStatus: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 转存文件到钉盘
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/hu8d2w 钉盘}
+ * @param url 文件在第三方服务器上的url地址或通过提交文件上传事务、单步文件上传获取到的media_id
+ * @param name 文件保存的名字
+ */
+export function saveFileToDingTalk(opt: {
+  url: string;
+  name: string;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.saveFileToDingTalk({
+      ...opt,
+      /** data结构
+       {"data":
+          [
+            {
+              "spaceId": "" //空间id
+              "fileId": "", //文件id
+              "fileName": "", //文件名
+              "fileSize": 111111, //文件大小
+              "fileType": "", //文件类型
+            }
+          ]
+        }
+      */
+      success(res: any) {
+        resolve(res.data);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 钉盘文件预览
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/hu8d2w 钉盘}
+ * @param spaceId 空间ID
+ * @param fileId 文件ID
+ * @param fileName 文件名称
+ * @param fileSize 文件大小，字节数
+ * @param fileType 文件扩展名
+ */
+export function previewFileInDingTalk(opt: {
+  spaceId: string;
+  fileId: string;
+  fileName: string;
+  fileSize: number;
+  fileType: string;
+}) {
+  return dd.previewFileInDingTalk({...opt});
+}
+
+/**
+ * 上传附件到钉盘/从钉盘选择文件
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/hu8d2w 钉盘}
+ * @param types 支持上传附件的文件类型，至少一个；Android&iOS：最多支持四种类型["photo","camera","file","space"]； PC端：最多支持["photo","file","space"]
+ * @param image types这个数组里有photo、camera参数需要构建这个数据
+ * @param compress 是否压缩，默认为true
+ * @param multiple 是否多选，默认为false
+ * @param max 最多选择的图片数目，最多支持9张
+ * @param isCopy 1复制，0不复制(PC端不支持此参数)
+ * @param spaceId 企业自定义空间
+ * @param space types这个数组里有space参数需要构建这个数据
+ * @param file types这个数组里有file参数需要构建这个数据
+ */
+export function uploadAttachmentToDingTalk({
+  types,
+  image,
+  compress = true,
+  multiple = false,
+  max,
+  isCopy,
+  spaceId,
+  space,
+  file,
+}: {
+  types: Array<string>;
+  image: object,
+  compress?: boolean;
+  multiple?: boolean;
+  max: number;
+  isCopy: number;
+  spaceId: string;
+  space: Object;
+  file: Object;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.uploadAttachmentToDingTalk({
+      types,
+      image,
+      compress,
+      multiple,
+      max,
+      isCopy,
+      spaceId,
+      space,
+      file,
+      success: (res: {
+        /** 支持上传附件的类型，目前有photo、camera、file、space */
+        type: string;
+        /** 文件上传成功后的数据信息 */
+        data: Array<object>;
+        /** 目标空间id */
+        spaceId: string;
+        /** 文件id */
+        fileId: string;
+        /** 文件名称 */
+        fileName: string;
+        /** 文件类型 */
+        fileType: string;
+        /** 文件大小 */
+        fileSize: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 选取钉盘目录
+ * 唤起钉盘选择器， 从用户当前的企业空间或个人空间选择一个目录， 用以保存文件等操作。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/hu8d2w 钉盘}
+ */
+export function chooseDingTalkDir() {
+  return new Promise((resolve, reject) => {
+    dd.chooseDingTalkDir({
+      success: (res: {
+        /** 被选中文件夹所在的钉盘空间id */
+        spaceId: string;
+        /** 被选中的文件夹路径， 例如“/测试/测试子目录/” */
+        path: string;
+        /** 被选中的文件夹id */
+        dirId: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 获取会话信息
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/epcw4e 会话}
+ * @param isConfirm 是否弹出确认窗口，默认为true
+ */
+export function chooseChatForNormalMsg(isConfirm = true) {
+  return new Promise((resolve, reject) => {
+    dd.chooseChatForNormalMsg({
+      isConfirm,
+      success: (res: {
+        /**  会话id（该cid和服务端开发文档-普通会话消息接口配合使用，而且只能使用一次，之后将失效） */
+        cid: string;
+        /**  会话标题 */
+        title: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 选择会话
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/epcw4e 会话}
+ * @param isAllowCreateGroup 是否允许创建会话
+ * @param filterNotOwnerGroup 是否限制为自己创建的会话
+ */
+export function chooseChat(opt: {
+  isAllowCreateGroup: boolean;
+  filterNotOwnerGroup: boolean;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.chooseChat({
+      ...opt,
+      success: (res: {
+        /** 会话id（该会话cid永久有效） */
+        chatId: string;
+        /** 会话标题 */
+        title: string;
+      }) => {
+        resolve(res);
+      },
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 根据chatId跳转到对应会话
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/epcw4e 会话}
+ * @param chatId 会话ID
+ */
+export function openChatByChatId(chatId: string) {
+  return new Promise((resolve, reject) => {
+    dd.openChatByChatId({
+      chatId,
+      success:resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 打开与某个用户的聊天页面（单聊会话）
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/epcw4e 会话}
+ * @param userId 用户工号
+ */
+export function openChatByUserId(userId: string) {
+  return new Promise((resolve, reject) => {
+    dd.openChatByUserId({
+      userId,
+      success:resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 创建一个 WebSocket 的连接；一个钉钉小程序同时只能保留一个 WebSocket 连接，如果当前已存在 WebSocket 连接，会自动关闭该连接，并重新创建一个新的 WebSocket 连接。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @param url 目标服务器url
+ * @param data 请求的参数
+ * @param header 设置请求的头部
+ */
+export function connectSocket(opt: {
+  url: string;
+  data?: object;
+  header?: object;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.connectSocket({
+      ...opt,
+      success: resolve,
+      fail: reject,
+    })
+  })
+}
+
+/**
+ * 监听WebSocket连接打开事件
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @fun WebSocket 连接打开事件的回调函数
+ */
+export function onSocketOpen(fun: Function) {
+  return Promise.resolve(dd.onSocketOpen(fun));
+}
+
+/**
+ * 取消监听WebSocket连接打开事件。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @fun 回调函数
+ */
+export function offSocketOpen(fun: Function) {
+  return Promise.resolve(dd.offSocketOpen(fun));
+}
+
+/**
+ * 监听WebSocket错误。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @fun WebSocket 错误事件的回调函数
+ */
+export function onSocketError(fun: Function) {
+  return Promise.resolve(dd.onSocketError(fun));
+}
+
+/**
+ * 取消监听WebSocket错误。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @fun 回调函数
+ */
+export function offSocketError(fun: Function) {
+  return Promise.resolve(dd.offSocketError(fun));
+}
+
+/**
+ * 通过 WebSocket 连接发送数据，需要先使用上述介绍的dd.connectSocket发起连接，再使用dd.onSocketsOpen回调之后再发送数据
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @param data 需要发送的内容：普通的文本内容 String 或者经 base64 编码后的 String
+ * @param isBuffer 如果需要发送二进制数据，需要将入参数据经 base64 编码成 String 后赋值 data，同时将此字段设置为true，否则如果是普通的文本内容 String，不需要设置此字段
+ */
+export function sendSocketMessage(opt: {
+  data: string;
+  isBuffer?: boolean;
+}) {
+  return new Promise((resolve, reject) => {
+    dd.sendSocketMessage({
+      ...opt,
+      success: resolve,
+      fail: reject,
+    })
+  }) 
+}
+
+/**
+ * 监听WebSocket接受到服务器的消息事件。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @fun WebSocket 接受到服务器的消息事件的回调函数
+ */
+export function onSocketMessage(fun: Function) {
+  return Promise.resolve(dd.onSocketMessage(fun));
+}
+
+/**
+ * 取消监听WebSocket接受到服务器的消息事件。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ */
+export function offSocketMessage() {
+  return dd.offSocketMessage();
+}
+
+/**
+ * 取消监听WebSocket接受到服务器的消息事件。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ */
+export function closeSocket() {
+  return new Promise((resolve, reject) => {
+    dd.closeSocket({
+      success: resolve,
+      fail: reject,
+    })
+  });
+}
+
+
+/**
+ * 取消监听WebSocket接受到服务器的消息事件。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ * @fun WebSocket 连接关闭事件的回调函数
+ */
+export function onSocketClose(fun: Function) {
+  return Promise.resolve(dd.onSocketClose(fun));
+}
+
+/**
+ * 取消监听WebSocket关闭。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
+ */
+export function offSocketClose() {
+  return dd.offSocketClose();
+}
+
