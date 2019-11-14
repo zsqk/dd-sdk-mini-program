@@ -24,7 +24,6 @@ export default {
   datePicker,
   createAnimation,
   hideKeyboard,
-  onKeyboardShow,
   pageScrollTo,
   complexChoose,
   chooseDepartments,
@@ -80,7 +79,7 @@ export default {
 
 /** 毫秒 */
 type Millisecond = number;
-type second = number;
+type Second = number;
 
 /**
  * 警告框
@@ -205,8 +204,8 @@ export function showActionSheet(opt: {
   return new Promise((resolve, reject) => {
     dd.showActionSheet({
       ...opt,
-      /** @returns index 被点击的按钮的索引，从0开始。点击取消或蒙层时返回 -1 */
       success: (res: {
+        /** 被点击的按钮的索引，从0开始。点击取消或蒙层时返回 -1 */
         index: number,
       }) => {
         resolve(res.index);
@@ -288,15 +287,13 @@ export function uploadFile(opt: {
   return new Promise((resolve, reject) => {
     dd.uploadFile({
       ...opt,
-      /**
-       * @returns data 服务器返回的数据
-       * @returns statusCode HTTP 状态码
-       * @returns header 服务器返回的 header
-       */
       success: (res: {
+        /** 服务器返回的数据 */
         data: string,
+        /**  HTTP 状态码 */
         statusCode: string,
-        header: any
+        /** 服务器返回的 header */
+        header: any,
       }) => {
         resolve(res);
       },
@@ -318,11 +315,11 @@ export function downloadFile(opt: {
   return new Promise((resolve, reject) => {
     dd.downloadFile({
       ...opt,
-      /** @returns filePath 文件临时存放的位置 */
       success: (res: {
+        /** 文件临时存放的位置 */
         filePath: string,
       }) => {
-        resolve(res);
+        resolve(res.filePath);
       },
       fail: reject,
     })
@@ -350,36 +347,34 @@ function getHeaders(origin: any) {
 export function getSystemInfo() {
   return new Promise((resolve, reject) => {
     dd.getSystemInfo({
-      /**
-       * @returns model 手机型号
-       * @returns pixelRatio 设备像素比
-       * @returns windowWidth 窗口宽度
-       * @returns windowHeight 窗口高度
-       * @returns language 钉钉设置的语言
-       * @returns version 钉钉版本号
-       * @returns storage 设备磁盘容量
-       * @returns currentBattery 当前电量百分比
-       * @returns system 系统版本
-       * @returns platform 系统名：Android，iOS
-       * @returns screenWidth 屏幕宽度
-       * @returns screenHeight 屏幕高度
-       * @returns brand 手机品牌
-       * @returns fontSizeSetting 用户设置字体大小
-       */
       success: (res: {
+        /** 手机型号 */
         model: string;
+        /** 设备像素比 */
         pixelRatio: number;
+        /** 窗口宽度 */
         windowWidth: number;
+        /** 窗口高度 */
         windowHeight: number;
+        /** 钉钉设置的语言 */
         language: string;
+        /** 钉钉版本号 */
         version: string;
+        /** 设备磁盘容量 */
         storage: string;
+        /** 当前电量百分比 */
         currentBattery: string;
+        /** 系统版本 */
         system: string;
+        /** 系统名：Android，iOS */
         platform: string;
+        /** 屏幕宽度 */
         screenWidth: number;
+        /** 屏幕高度 */
         screenHeight: number;
+        /** 手机品牌 */
         brand: string;
+        /** 用户设置字体大小 */
         fontSizeSetting: string;
       }) => {
         resolve(res);
@@ -526,9 +521,11 @@ export function datePicker(opt: {
   return new Promise((resolve, reject) => {
     dd.datePicker({
       ...opt,
-      /** @returns date 选择的日期 */
-      success(res: any) {
-        resolve(res.date);
+      success: (res: {
+        /** 选择的日期 */
+        data: string;
+      }) => {
+        resolve(res.data);
       },
       fail: reject,
     })
@@ -585,10 +582,8 @@ export function createAnimation({
  * 监听键盘弹起事件，并返回键盘高度
  * 键盘高度可以在回调参数的data.height参数中取到，单位为px。
  * 需要在page中设置该回调。
+ * 调用 onKeyboardShow()
  */
-export function onKeyboardShow(res: any) {
-  return res.data.height;
-}
 
 /**
  * 监听键盘收起事件。
@@ -632,20 +627,18 @@ export function getLocation({
     dd.getLocation({
       cacheTimeout,
       type,
-      /**
-       * @returns longitude 经度
-       * @returns latitude 纬度
-       * @returns accuracy 精确度，单位 米
-       * @returns province 省份(type>0生效)
-       * @returns city 城市(type>0生效)
-       * @returns address 格式化地址，如：北京市朝阳区南磨房镇北京国家广告产业园区(type>0生效)
-       */
       success: (res: {
+        /** 经度 */
         longitude: string,
+        /** 纬度 */
         latitude: string,
+        /** 精确度，单位 米 */
         accuracy: string,
+        /** 省份(type>0生效) */
         province: string,
+        /** 城市(type>0生效) */
         city: string,
+        /** 格式化地址，如：北京市朝阳区南磨房镇北京国家广告产业园区(type>0生效) */
         address: string,
       }) => {
         resolve(res);
@@ -699,14 +692,12 @@ export function scan(type = 'qr') {
   return new Promise((resolve, reject) => {
     dd.scan({
       type,
-      /**
-       * @returns code 扫码所得数据
-       * @returns qrCode 扫描二维码时返回二维码数据
-       * @returns barCode 扫描条形码时返回条形码数据
-       */
       success: (res: {
+        /** 扫码所得数据 */
         code: string,
+        /** 扫描二维码时返回二维码数据 */
         qrCode: string,
+        /** 扫描条形码时返回条形码数据 */
         barCode: string,
       }) => {
         resolve(res);
@@ -751,15 +742,12 @@ export function complexChoose(opt: {
   return new Promise((resolve, reject) => {
     dd.complexChoose({
       ...opt,
-      /**
-       * @returns selectedCount 选择人数
-       * @returns users 返回选人的列表，列表中的对象包含name（用户名），avatar（用户头像），userId（用户工号）三个字段
-       * @returns departments 返回已选部门列表，列表中每个对象包含id（部门id）、name（部门名称）、count（部门人数）
-       * 
-       */
       success: (res: {
+        /** 选择人数 */
         selectedCount: number,
+        /** 返回选人的列表，列表中的对象包含name（用户名），avatar（用户头像），userId（用户工号）三个字段 */
         users: Array<object>,
+        /**  返回已选部门列表，列表中每个对象包含id（部门id）、name（部门名称）、count（部门人数） */
         departments: Array<object>,
       }) => {
         resolve(res);
@@ -794,15 +782,12 @@ export function chooseDepartments(opt: {
   return new Promise((resolve, reject) => {
     dd.chooseDepartments({
       ...opt,
-      /**
-       * @returns selectedCount 选择人数
-       * @returns departmentsCount 选择的部门数
-       * @returns departments 返回已选部门列表，列表中每个对象包含id（部门id）、name（部门名称）、number（部门人数）
-       * 
-       */
       success: (res: {
+        /** 选择人数 */
         userCount: number,
+        /** 选择的部门数 */
         departmentsCount: number,
+        /** 返回已选部门列表，列表中每个对象包含id（部门id）、name（部门名称）、number（部门人数） */
         departments: Array<object>,
       }) => {
         resolve(res);
@@ -821,8 +806,8 @@ export function createGroupChat(users: Array<string>) {
   return new Promise((resolve, reject) => {
     dd.createGroupChat({
       users,
-      /**@returns id 企业群id */
       success: (res: {
+        /** 企业群id */
         id: Array<string>
       }) => {
         resolve(res.id);
@@ -857,12 +842,14 @@ export function choosePhonebook({
       multiple,
       limitTips,
       maxUsers,
-      /**
-       * @returns name 姓名
-       * @returns avatar 头像图片id，可能为空
-       * @returns mobile 用户手机号
-       */
-      success: (res: Array<object>) => {
+      success: (res: [{
+        /** 姓名 */
+        name: string;
+        /** 头像图片id，可能为空 */
+        avatar: string;
+        /** 用户手机号 */
+        mobile: string;
+      }]) => {
         resolve(res);
       },
       fail: reject,
@@ -907,13 +894,16 @@ export function chooseExternalUsers({
       pickedUsers,
       disabledUsers,
       requiredUsers,
-      /**
-       * @returns name 姓名
-       * @returns avatar 头像图片url，可能为空
-       * @returns userId 用户id
-       * @returns orgName 公司名字
-       */
-      success: (res: Array<object>) => {
+      success: (res: [{
+        /** 姓名 */
+        name: string;
+        /** 头像图片url，可能为空 */
+        avatar: string;
+        /** 用户id */
+        userId: string;
+        /** 公司名字 */
+        orgName: string;
+      }]) => {
         resolve(res);
       },
       fail: reject,
@@ -946,22 +936,20 @@ export function editExternalUser(opt: {
   return new Promise((resolve, reject) => {
     dd.editExternalUser({
       ...opt,
-      /**
-       * @returns userId 需要编辑的员工id，不填，则为新增外部联系人
-       * @returns name 需要新增的外部联系人的名字，emplID为空时生效
-       * @returns mobile 需要预填的手机号，emplID为空时生效
-       * @returns companyName 需要预填的公司名，emplID为空时生效
-       * @returns deptName 预填部门名字，emplID为空时生效
-       * @returns job 预填职位，emplID为空时生效
-       * @returns remark	备注信息，emplId为空时生效
-       */
       success: (res: {
+        /** 需要编辑的员工id，不填，则为新增外部联系人 */
         userId: string,
+        /** 需要新增的外部联系人的名字，emplID为空时生效 */
         name: string,
+        /** 需要预填的手机号，emplID为空时生效 */
         mobile: string,
+        /** 需要预填的公司名，emplID为空时生效 */
         companyName: string,
+        /** 预填部门名字，emplID为空时生效 */
         deptName: string,
+        /** 预填职位，emplID为空时生效 */
         job: string,
+        /** 备注信息，emplId为空时生效 */
         remark: string,
       }) => {
         resolve(res);
@@ -996,12 +984,14 @@ export function chooseUserFromList({
       users,
       isShowCompanyName,
       disabledUsers,
-       /**
-        * @returns name 姓名
-        * @returns avatar 头像图片url，可能为空
-        * @returns userId 即员工userid
-       */
-      success: (res: Array<object>) => {
+      success: (res: [{
+        /** 姓名 */
+        name: string;
+        /** 头像图片url，可能为空 */
+        avatar: string;
+        /** 即员工userid */
+        userId: string;
+      }]) => {
         resolve(res);
       },
       fail: reject,
@@ -1051,8 +1041,8 @@ export function getStorage(key: string) {
   return new Promise((resolve, reject) => {
     dd.getStorage({
       key,
-      /** @returns data key对应的内容（不存在时返回 null） */
       success: (res: {
+        /** key对应的内容（不存在时返回 null） */
         data: object | string,
       }) => {
         resolve(res.data);
@@ -1106,12 +1096,10 @@ export function removeStorageSync(key: string) {
 export function getNetworkType() {
   return new Promise((resolve, reject) => {
     dd.getNetworkType({
-      /**
-       * @retuens networkAvailable 网络是否可用
-       * @returns networkType 网络类型值 UNKNOWN / NOTREACHABLE / WIFI / 3G / 2G / 4G / WWAN
-       */
       success: (res: {
+        /** 网络是否可用 */
         networkAvailable: boolean;
+        /** 网络类型值 UNKNOWN / NOTREACHABLE / WIFI / 3G / 2G / 4G / WWAN */
         networkType: string;
       }) => {
         resolve(res);
@@ -1128,8 +1116,8 @@ export function getNetworkType() {
 export function getClipboard() {
   return new Promise((resolve, reject) => {
     dd.getClipboard({
-      /**@returns text 剪切板数据 */
       success: (res: {
+        /** 剪切板数据 */
         text: string;
       }) => {
         resolve(res.text);
@@ -1249,8 +1237,8 @@ export function compressImage({
     dd.compressImage({
       filePaths,
       compressLevel,
-      /** @returns filePaths 压缩后的路径数组 */
       success: (res: {
+        /** 压缩后的路径数组 */
         filePaths: Array<string>;
       }) => {
         resolve(res.filePaths);
@@ -1269,14 +1257,12 @@ export function getImageInfo(src: string) {
   return new Promise((resolve, reject) => {
     dd.getImageInfo({
       src,
-      /**
-       * @returns width 图片宽度（单位px）
-       * @returns height 图片高度（单位px）
-       * @returns path 图片本地路径
-       */
       succrss: (res: {
+        /** 图片宽度（单位px） */
         width: number;
+        /** 图片高度（单位px） */
         height: number;
+        /** 图片本地路径 */
         path: string;
       }) => {
         resolve(res);
@@ -1313,24 +1299,22 @@ export function chooseVideo({
   maxDuration = 60,
 }: {
   sourceType?: Array<string>;
-  maxDuration?: second;
+  maxDuration?: Second;
 } = {}) {
   return new Promise((resolve, reject) => {
     dd.chooseVideo({
       sourceType,
       maxDuration,
-      /**
-       * @returns filePath 视频临时文件路径
-       * @returns duration 视频时间长度
-       * @returns size 视频数据大小
-       * @returns height 视频高度
-       * @returns width 视频宽度
-       */
       success: (res: {
+        /** 视频临时文件路径 */
         filePath: string;
-        duration: second;
+        /** 视频时间长度 */
+        duration: Second;
+        /** 视频数据大小 */
         size: number;
+        /** 视频高度 */
         height: number;
+        /** 视频宽度 */
         width: number;
       }) => {
         resolve(res);
@@ -1343,12 +1327,7 @@ export function chooseVideo({
 /**
  * 分享
  * {@link https://ding-doc.dingtalk.com/doc#/dev/share-app 分享}
- * 调用onShareAppMessage() 返回一个object
- * @returns title 自定义分享标题
- * @returns desc 自定义分享描述
- * @returns path 自定义分享页面的路径，path中的自定义参数可在小程序生命周期的onLoad方法中获取（参数传递遵循http get的传参规则）
- * @returns imageUrl 自定义分享图片(只支持网络图片路径)
- * @returns fallbackUrl 可降级 H5 URL，仅适用于企业应用。当前钉钉桌面客户端不支持打开企业类小程序，配置此设置后，在桌面端访问此企业应用时，会打开fallbackUrl配置的H5 URL。
+ * 调用onShareAppMessage() 返回一个object {title 自定义分享标题; desc 自定义分享描述; path 自定义分享页面的路径，path中的自定义参数可在小程序生命周期的onLoad方法中获取（参数传递遵循http get的传参规则）;imageUrl 自定义分享图片(只支持网络图片路径}fallbackUrl 可降级 H5 URL，仅适用于企业应用。当前钉钉桌面客户端不支持打开企业类小程序，配置此设置后，在桌面端访问此企业应用时，会打开fallbackUrl配置的H5 URL。
  */
 
  /**
@@ -1457,14 +1436,12 @@ export function pay(info: string) {
   return new Promise((resolve, reject) => {
     dd.pay({
       info,
-      /**
-       * @returns memo 保留参数，一般无内容
-       * @returns result 本次操作返回的结果数据
-       * @returns resultStatus 本次操作的状态返回值，标识本次调用的结果 参考：https://doc.open.alipay.com/doc2/detail.htm?spm=a219a.7629140.0.0.MMxZUF&treeId=59&articleId=103671&docType=1
-       */
       success: (res: {
+        /** 保留参数，一般无内容 */
         memo: string;
+        /** 本次操作返回的结果数据 */
         result: string;
+        /** 本次操作的状态返回值，标识本次调用的结果 参考：https://doc.open.alipay.com/doc2/detail.htm?spm=a219a.7629140.0.0.MMxZUF&treeId=59&articleId=103671&docType=1 */
         resultStatus: string;
       }) => {
         resolve(res);
@@ -1572,22 +1549,20 @@ export function uploadAttachmentToDingTalk({
       spaceId,
       space,
       file,
-      /**
-       * @returns type 支持上传附件的类型，目前有photo、camera、file、space
-       * @returns data 文件上传成功后的数据信息
-       * @returns spaceId 目标空间id
-       * @returns fileId 文件id
-       * @returns fileName 文件名称
-       * @returns fileType 文件类型
-       * @returns fileSize 文件大小
-       */
       success: (res: {
+        /** 支持上传附件的类型，目前有photo、camera、file、space */
         type: string;
+        /** 文件上传成功后的数据信息 */
         data: Array<object>;
+        /** 目标空间id */
         spaceId: string;
+        /** 文件id */
         fileId: string;
+        /** 文件名称 */
         fileName: string;
+        /** 文件类型 */
         fileType: string;
+        /** 文件大小 */
         fileSize: string;
       }) => {
         resolve(res);
@@ -1605,14 +1580,12 @@ export function uploadAttachmentToDingTalk({
 export function chooseDingTalkDir() {
   return new Promise((resolve, reject) => {
     dd.chooseDingTalkDir({
-      /**
-       * @returns spaceId 被选中文件夹所在的钉盘空间id
-       * @returns path 被选中的文件夹路径， 例如“/测试/测试子目录/”
-       * @returns dirId 被选中的文件夹id
-       */
       success: (res: {
+        /** 被选中文件夹所在的钉盘空间id */
         spaceId: string;
+        /** 被选中的文件夹路径， 例如“/测试/测试子目录/” */
         path: string;
+        /** 被选中的文件夹id */
         dirId: string;
       }) => {
         resolve(res);
@@ -1631,12 +1604,10 @@ export function chooseChatForNormalMsg(isConfirm = true) {
   return new Promise((resolve, reject) => {
     dd.chooseChatForNormalMsg({
       isConfirm,
-      /**
-       * @returns cid 会话id（该cid和服务端开发文档-普通会话消息接口配合使用，而且只能使用一次，之后将失效）
-       * @returns title 会话标题
-       */
       success: (res: {
+        /**  会话id（该cid和服务端开发文档-普通会话消息接口配合使用，而且只能使用一次，之后将失效） */
         cid: string;
+        /**  会话标题 */
         title: string;
       }) => {
         resolve(res);
@@ -1659,12 +1630,10 @@ export function chooseChat(opt: {
   return new Promise((resolve, reject) => {
     dd.chooseChat({
       ...opt,
-      /**
-       * @returns chatId 会话id（该会话cid永久有效）
-       * @returns title 会话标题
-       */
       success: (res: {
+        /** 会话id（该会话cid永久有效） */
         chatId: string;
+        /** 会话标题 */
         title: string;
       }) => {
         resolve(res);
@@ -1784,8 +1753,6 @@ export function sendSocketMessage(opt: {
  * 监听WebSocket接受到服务器的消息事件。
  * {@link https://ding-doc.dingtalk.com/doc#/dev/ywpb29 webSocket}
  * @fun WebSocket 接受到服务器的消息事件的回调函数
- * @returns 回调返回值 data {String/ArrayBuffer} 服务器返回的消息：普通的文本 String 或者经 base64 编码后的 String
- * @returns 回调返回值 isBuffer {Boolean} 如果此字段值为true，data字段表示接收到的经过了 base64 编码后的 String，否则 data 字段表示接收到的普通 String 文本。
  */
 export function onSocketMessage(fun: Function) {
   return Promise.resolve(dd.onSocketMessage(fun));
