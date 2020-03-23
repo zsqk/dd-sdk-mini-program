@@ -1,4 +1,4 @@
-import forEach from "lodash/forEach";
+import forEach from 'lodash/forEach';
 
 export default {
   alert,
@@ -88,7 +88,7 @@ type Second = number;
 export function alert({
   title,
   content,
-  buttonText
+  buttonText,
 }: {
   /** 标题 */
   title: string;
@@ -156,8 +156,8 @@ export function showToast({
       duration,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -180,8 +180,8 @@ export function showLoading({
       delay,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -205,15 +205,15 @@ export function showActionSheet(opt: {
   cancelButtonText?: string;
 }): Promise<{
   /** 被点击的按钮的索引，从0开始。点击取消或蒙层时返回 -1 */
-  index: number,
+  index: number;
 }> {
   return new Promise((resolve, reject) => {
     dd.showActionSheet({
       ...opt,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -246,8 +246,8 @@ export function httpRequest(opt: {
   data?: any;
 }) {
   let { headers = {}, data, ...rest } = opt;
-  if (!headers["Content-Type"]) {
-    headers["Content-Type"] = "application/json";
+  if (!headers['Content-Type']) {
+    headers['Content-Type'] = 'application/json';
     data = JSON.stringify(data);
   }
   return new Promise((resolve, reject) => {
@@ -263,7 +263,7 @@ export function httpRequest(opt: {
         resolve(res);
       },
       fail: reject,
-      ...rest
+      ...rest,
     });
   });
 }
@@ -288,19 +288,19 @@ export function uploadFile(opt: {
   formData?: any;
 }): Promise<{
   /** 服务器返回的数据 */
-  data: string,
+  data: string;
   /**  HTTP 状态码 */
-  statusCode: string,
+  statusCode: string;
   /** 服务器返回的 header */
-  header: any,
+  header: any;
 }> {
   return new Promise((resolve, reject) => {
     dd.uploadFile({
       ...opt,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -320,8 +320,8 @@ export function downloadFile(opt: {
         resolve(res.filePath);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -378,8 +378,8 @@ export function getSystemInfo(): Promise<{
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -438,8 +438,8 @@ export function navigateTo(url: string) {
       url,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -455,7 +455,7 @@ export function navigateBack(delta = 1) {
       delta,
       success: resolve,
       fail: reject,
-    })
+    });
   });
 }
 
@@ -472,8 +472,8 @@ export function reLaunch(url: string) {
       url,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -499,8 +499,8 @@ export function setNavigationBar({
       reset,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -515,8 +515,8 @@ export function switchTab(url: string) {
       url,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -537,8 +537,8 @@ export function datePicker(opt: {
         resolve(res.data);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -579,8 +579,14 @@ export function createAnimation({
   transformOrigin = '50',
 }: {
   duration?: Millisecond;
-  timeFunction?: "linear" | "ease" | "ease-in" | "ease-in-out" | "ease-out"
-  | "step-start" | "step-end";
+  timeFunction?:
+    | 'linear'
+    | 'ease'
+    | 'ease-in'
+    | 'ease-in-out'
+    | 'ease-out'
+    | 'step-start'
+    | 'step-end';
   delay?: Millisecond;
   transformOrigin?: string;
 } = {}) {
@@ -589,7 +595,7 @@ export function createAnimation({
     timeFunction,
     delay,
     transformOrigin,
-  })
+  });
 }
 
 /**
@@ -621,7 +627,7 @@ export function hideKeyboard() {
 export function pageScrollTo(scrollTop: number) {
   return dd.pageScrollTo({
     scrollTop,
-  })
+  });
 }
 
 /**
@@ -635,21 +641,21 @@ export function getLocation({
   cacheTimeout = 30,
   type,
 }: {
-  cacheTimeout?: Number,
-  type?: number,
+  cacheTimeout?: Number;
+  type?: number;
 } = {}): Promise<{
   /** 经度 */
-  longitude: string,
+  longitude: string;
   /** 纬度 */
-  latitude: string,
+  latitude: string;
   /** 精确度，单位 米 */
-  accuracy: string,
+  accuracy: string;
   /** 省份(type>0生效) */
-  province: string,
+  province: string;
   /** 城市(type>0生效) */
-  city: string,
+  city: string;
   /** 格式化地址，如：北京市朝阳区南磨房镇北京国家广告产业园区(type>0生效) */
-  address: string,
+  address: string;
 }> {
   return new Promise((resolve, reject) => {
     dd.getLocation({
@@ -659,8 +665,8 @@ export function getLocation({
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -695,7 +701,7 @@ export function openLocation({
       success: resolve,
       fail: reject,
     });
-  })
+  });
 }
 
 /**
@@ -704,13 +710,15 @@ export function openLocation({
  * @param type 扫码样式(默认 qr)：1, qr，扫码框样式为二维码扫码框
  * 2.bar，扫码样式为条形码扫码框
  */
-export function scan(type = 'qr'): Promise<{
+export function scan(
+  type = 'qr'
+): Promise<{
   /** 扫码所得数据 */
-  code: string,
+  code: string;
   /** 扫描二维码时返回二维码数据 */
-  qrCode: string,
+  qrCode: string;
   /** 扫描条形码时返回条形码数据 */
-  barCode: string,
+  barCode: string;
 }> {
   return new Promise((resolve, reject) => {
     dd.scan({
@@ -719,8 +727,8 @@ export function scan(type = 'qr'): Promise<{
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -757,13 +765,13 @@ export function complexChoose(opt: {
   startWithDepartmentId: number;
 }): Promise<{
   /** 选择人数 */
-  selectedCount: number,
+  selectedCount: number;
   /** 返回选人的列表，列表中的对象包含name（用户名），avatar（用户头像），
    * userId（用户工号）三个字段 */
-  users: Array<object>,
+  users: Array<object>;
   /**  返回已选部门列表，列表中每个对象包含id（部门id）、name（部门名称）、
    * count（部门人数） */
-  departments: Array<object>,
+  departments: Array<object>;
 }> {
   return new Promise((resolve, reject) => {
     dd.complexChoose({
@@ -772,8 +780,8 @@ export function complexChoose(opt: {
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -799,12 +807,12 @@ export function chooseDepartments(opt: {
   permissionType: string;
 }): Promise<{
   /** 选择人数 */
-  userCount: number,
+  userCount: number;
   /** 选择的部门数 */
-  departmentsCount: number,
+  departmentsCount: number;
   /** 返回已选部门列表，
    * 列表中每个对象包含id（部门id）、name（部门名称）、number（部门人数） */
-  departments: Array<object>,
+  departments: Array<object>;
 }> {
   return new Promise((resolve, reject) => {
     dd.chooseDepartments({
@@ -813,8 +821,8 @@ export function chooseDepartments(opt: {
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -830,8 +838,8 @@ export function createGroupChat(users: Array<string>): Promise<Array<string>> {
         resolve(res.id);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -852,14 +860,18 @@ export function choosePhonebook({
   multiple?: boolean;
   limitTips: string;
   maxUsers: number;
-}): Promise<[{
-  /** 姓名 */
-  name: string;
-  /** 头像图片id，可能为空 */
-  avatar: string;
-  /** 用户手机号 */
-  mobile: string;
-}]> {
+}): Promise<
+  [
+    {
+      /** 姓名 */
+      name: string;
+      /** 头像图片id，可能为空 */
+      avatar: string;
+      /** 用户手机号 */
+      mobile: string;
+    }
+  ]
+> {
   return new Promise((resolve, reject) => {
     dd.choosePhonebook({
       title,
@@ -870,8 +882,8 @@ export function choosePhonebook({
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -901,16 +913,20 @@ export function chooseExternalUsers({
   pickedUsers: Array<string>;
   disabledUsers: Array<string>;
   requiredUsers: Array<string>;
-}): Promise<[{
-  /** 姓名 */
-  name: string;
-  /** 头像图片url，可能为空 */
-  avatar: string;
-  /** 用户id */
-  userId: string;
-  /** 公司名字 */
-  orgName: string;
-}]> {
+}): Promise<
+  [
+    {
+      /** 姓名 */
+      name: string;
+      /** 头像图片url，可能为空 */
+      avatar: string;
+      /** 用户id */
+      userId: string;
+      /** 公司名字 */
+      orgName: string;
+    }
+  ]
+> {
   return new Promise((resolve, reject) => {
     dd.chooseExternalUsers({
       title,
@@ -920,12 +936,12 @@ export function chooseExternalUsers({
       pickedUsers,
       disabledUsers,
       requiredUsers,
-      success (res: any) {
+      success(res: any) {
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -949,21 +965,21 @@ export function editExternalUser(opt: {
   deptName: string;
   job: string;
   remark: string;
-}): Promise< {
+}): Promise<{
   /** 需要编辑的员工id，不填，则为新增外部联系人 */
-  userId: string,
+  userId: string;
   /** 需要新增的外部联系人的名字，emplID为空时生效 */
-  name: string,
+  name: string;
   /** 需要预填的手机号，emplID为空时生效 */
-  mobile: string,
+  mobile: string;
   /** 需要预填的公司名，emplID为空时生效 */
-  companyName: string,
+  companyName: string;
   /** 预填部门名字，emplID为空时生效 */
-  deptName: string,
+  deptName: string;
   /** 预填职位，emplID为空时生效 */
-  job: string,
+  job: string;
   /** 备注信息，emplId为空时生效 */
-  remark: string,
+  remark: string;
 }> {
   return new Promise((resolve, reject) => {
     dd.editExternalUser({
@@ -972,8 +988,8 @@ export function editExternalUser(opt: {
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -994,14 +1010,18 @@ export function chooseUserFromList({
   users: Array<string>;
   isShowCompanyName?: boolean;
   disabledUsers: Array<string>;
-}): Promise<[{
-  /** 姓名 */
-  name: string;
-  /** 头像图片url，可能为空 */
-  avatar: string;
-  /** 即员工userid */
-  userId: string;
-}]> {
+}): Promise<
+  [
+    {
+      /** 姓名 */
+      name: string;
+      /** 头像图片url，可能为空 */
+      avatar: string;
+      /** 即员工userid */
+      userId: string;
+    }
+  ]
+> {
   return new Promise((resolve, reject) => {
     dd.chooseUserFromList({
       title,
@@ -1012,8 +1032,8 @@ export function chooseUserFromList({
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1022,17 +1042,14 @@ export function chooseUserFromList({
  * @param key 缓存数据的key
  * @param data 要缓存的数据
  */
-export function setStorage(opt: {
-  key: string;
-  data: object | string;
-}) {
+export function setStorage(opt: { key: string; data: object | string }) {
   return new Promise((resolve, reject) => {
     dd.setStorage({
       ...opt,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1042,10 +1059,7 @@ export function setStorage(opt: {
  * @param key 缓存数据的key
  * @param data 要缓存的数据
  */
-export function setStorageSync(opt: {
-  key: string;
-  data: object | string;
-}) {
+export function setStorageSync(opt: { key: string; data: object | string }) {
   return dd.setStorageSync(opt);
 }
 
@@ -1062,8 +1076,8 @@ export function getStorage(key: string): Promise<object | string> {
         resolve(res.data);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1073,7 +1087,7 @@ export function getStorage(key: string): Promise<object | string> {
  * @param key 缓存数据的key
  */
 export function getStorageSync(key: string) {
-  return dd.getStorageSync({key});
+  return dd.getStorageSync({ key });
 }
 
 /**
@@ -1087,8 +1101,8 @@ export function removeStorage(key: string) {
       key,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1119,8 +1133,8 @@ export function getNetworkType(): Promise<{
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1135,7 +1149,7 @@ export function getClipboard(): Promise<string> {
       },
       fail: reject,
     });
-  })
+  });
 }
 
 /**
@@ -1149,8 +1163,8 @@ export function setClipboard(text: string) {
       text,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1162,8 +1176,8 @@ export function vibrate() {
     dd.vibrate({
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1174,7 +1188,7 @@ export function vibrate() {
  */
 export function chooseImage({
   count = 1,
-  sourceType = ['camera','album'],
+  sourceType = ['camera', 'album'],
 }: {
   count?: number;
   sourceType?: Array<string>;
@@ -1187,8 +1201,8 @@ export function chooseImage({
         resolve(res.filePaths);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1210,8 +1224,8 @@ export function previewImage({
       current,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1225,8 +1239,8 @@ export function saveImage(url: string) {
       url,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1251,8 +1265,8 @@ export function compressImage({
         resolve(res.filePaths);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1260,7 +1274,9 @@ export function compressImage({
  * {@link https://ding-doc.dingtalk.com/doc#/dev/media-image 多媒体=>图片}
  * @param src 图片路径，目前支持：
  */
-export function getImageInfo(src: string): Promise<{
+export function getImageInfo(
+  src: string
+): Promise<{
   /** 图片宽度（单位px） */
   width: number;
   /** 图片高度（单位px） */
@@ -1275,8 +1291,8 @@ export function getImageInfo(src: string): Promise<{
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1328,8 +1344,8 @@ export function chooseVideo({
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1344,21 +1360,21 @@ export function chooseVideo({
  * 在桌面端访问此企业应用时，会打开fallbackUrl配置的H5 URL。
  */
 
- /**
-  * 发钉接口支持唤起DING、任务、日程等创建界面，
-  * 目前发钉只支持客户端发钉，不支持直接通过服务端发钉。
-  * {@link https://ding-doc.dingtalk.com/doc#/dev/raeos8 Ding}
-  * @param users 用户列表，员工userid
-  * @param corpId 企业corpId
-  * @param alertType 钉提醒类型 0：电话, 1：短信, 2：应用内
-  * @param alertDate 钉提醒时间；非必填
-  * @param type Number为整数，钉类型 1：image 2：link
-  * @param attachment 附件信息
-  * @param text 消息体
-  * @param bizType 0：通知DING，1：任务，2：日程
-  * @param taskInfo 任务信息
-  * @param confInfo 日程信息
-  */
+/**
+ * 发钉接口支持唤起DING、任务、日程等创建界面，
+ * 目前发钉只支持客户端发钉，不支持直接通过服务端发钉。
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/raeos8 Ding}
+ * @param users 用户列表，员工userid
+ * @param corpId 企业corpId
+ * @param alertType 钉提醒类型 0：电话, 1：短信, 2：应用内
+ * @param alertDate 钉提醒时间；非必填
+ * @param type Number为整数，钉类型 1：image 2：link
+ * @param attachment 附件信息
+ * @param text 消息体
+ * @param bizType 0：通知DING，1：任务，2：日程
+ * @param taskInfo 任务信息
+ * @param confInfo 日程信息
+ */
 export function createDing(opt: {
   users: Array<string>;
   corpId: string;
@@ -1376,7 +1392,7 @@ export function createDing(opt: {
   /** 发送的DING消息的文本内容 */
   text: string;
   /** 发送消息是否成功，true|false */
-  result:boolean;
+  result: boolean;
 }> {
   return new Promise((resolve, reject) => {
     dd.createDing({
@@ -1385,8 +1401,8 @@ export function createDing(opt: {
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1400,8 +1416,8 @@ export function callUsers(users: Array<string>) {
       users,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1421,8 +1437,8 @@ export function showCallMenu(opt: {
       ...opt,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1438,8 +1454,8 @@ export function checkBizCall(corpId: string): Promise<boolean> {
         resolve(res.isSupport);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1449,7 +1465,9 @@ export function checkBizCall(corpId: string): Promise<boolean> {
  * info 参考支付宝文档：
  * https://doc.open.alipay.com/doc2/detail.htm?treeId=59&articleId=103663&docType=1
  */
-export function pay(info: string): Promise<{
+export function pay(
+  info: string
+): Promise<{
   /** 保留参数，一般无内容 */
   memo: string;
   /** 本次操作返回的结果数据 */
@@ -1466,8 +1484,8 @@ export function pay(info: string): Promise<{
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1479,20 +1497,22 @@ export function pay(info: string): Promise<{
 export function saveFileToDingTalk(opt: {
   url: string;
   name: string;
-}): Promise<[
-  {
-    /** 空间id */
-    spaceId: string;
-    /** 文件id */
-    fileId: string;
-    /** 文件名 */
-    fileName: string;
-    /** 文件大小 */
-    fileSize: number;
-    /** 文件类型 */
-    fileType: string;
-  }
-]> {
+}): Promise<
+  [
+    {
+      /** 空间id */
+      spaceId: string;
+      /** 文件id */
+      fileId: string;
+      /** 文件名 */
+      fileName: string;
+      /** 文件大小 */
+      fileSize: number;
+      /** 文件类型 */
+      fileType: string;
+    }
+  ]
+> {
   return new Promise((resolve, reject) => {
     dd.saveFileToDingTalk({
       ...opt,
@@ -1500,8 +1520,8 @@ export function saveFileToDingTalk(opt: {
         resolve(res.data);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1520,7 +1540,7 @@ export function previewFileInDingTalk(opt: {
   fileSize: number;
   fileType: string;
 }) {
-  return dd.previewFileInDingTalk({...opt});
+  return dd.previewFileInDingTalk({ ...opt });
 }
 
 /**
@@ -1550,7 +1570,7 @@ export function uploadAttachmentToDingTalk({
   file,
 }: {
   types: Array<string>;
-  image: object,
+  image: object;
   compress?: boolean;
   multiple?: boolean;
   max: number;
@@ -1589,8 +1609,8 @@ export function uploadAttachmentToDingTalk({
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1612,8 +1632,8 @@ export function chooseDingTalkDir(): Promise<{
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1621,7 +1641,9 @@ export function chooseDingTalkDir(): Promise<{
  * {@link https://ding-doc.dingtalk.com/doc#/dev/epcw4e 会话}
  * @param isConfirm 是否弹出确认窗口，默认为true
  */
-export function chooseChatForNormalMsg(isConfirm = true): Promise<{
+export function chooseChatForNormalMsg(
+  isConfirm = true
+): Promise<{
   /**  会话id
    * （该cid和服务端开发文档-普通会话消息接口配合使用，而且只能使用一次，之后将失效）
    */
@@ -1636,8 +1658,8 @@ export function chooseChatForNormalMsg(isConfirm = true): Promise<{
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1662,8 +1684,8 @@ export function chooseChat(opt: {
         resolve(res);
       },
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1675,10 +1697,10 @@ export function openChatByChatId(chatId: string) {
   return new Promise((resolve, reject) => {
     dd.openChatByChatId({
       chatId,
-      success:resolve,
+      success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1690,10 +1712,10 @@ export function openChatByUserId(userId: string) {
   return new Promise((resolve, reject) => {
     dd.openChatByUserId({
       userId,
-      success:resolve,
+      success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1714,8 +1736,8 @@ export function connectSocket(opt: {
       ...opt,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1763,17 +1785,14 @@ export function offSocketError(fun: Function) {
  * 需要将入参数据经 base64 编码成 String 后赋值 data，
  * 同时将此字段设置为true，否则如果是普通的文本内容 String，不需要设置此字段
  */
-export function sendSocketMessage(opt: {
-  data: string;
-  isBuffer?: boolean;
-}) {
+export function sendSocketMessage(opt: { data: string; isBuffer?: boolean }) {
   return new Promise((resolve, reject) => {
     dd.sendSocketMessage({
       ...opt,
       success: resolve,
       fail: reject,
-    })
-  })
+    });
+  });
 }
 
 /**
@@ -1802,10 +1821,9 @@ export function closeSocket() {
     dd.closeSocket({
       success: resolve,
       fail: reject,
-    })
+    });
   });
 }
-
 
 /**
  * 取消监听WebSocket接受到服务器的消息事件。
@@ -1823,4 +1841,3 @@ export function onSocketClose(fun: Function) {
 export function offSocketClose() {
   return dd.offSocketClose();
 }
-
