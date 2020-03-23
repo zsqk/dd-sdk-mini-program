@@ -450,9 +450,13 @@ export function navigateTo(url: string) {
  * 如果 delta 大于现有打开的页面数，则返回到当前页面栈最顶部的页
  */
 export function navigateBack(delta = 1) {
-  return dd.navigateBack({
-    delta,
-  })
+  return new Promise((resolve, reject) => {
+    dd.navigateBack({
+      delta,
+      success: resolve,
+      fail: reject,
+    })
+  });
 }
 
 /**
