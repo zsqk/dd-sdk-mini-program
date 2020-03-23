@@ -400,11 +400,43 @@ export function createCanvasContext(canvasId: string) {
   return dd.createCanvasContext(canvasId);
 }
 
+interface RectInfo {
+  x: number;
+  y: number;
+  width: number;
+  height: number;
+  top: number;
+  right: number;
+  bottom: number;
+  left: number;
+}
+
+type SelectorQueryInfo =
+  | null
+  | RectInfo
+  | RectInfo[]
+  | { scrollTop: number; scrollLeft: number }
+  | { width: number; height: number };
+
+interface SelectorQuery {
+  /** 选择当前第一个匹配选择器的节点 */
+  select: (id: string) => SelectorQuery;
+  /** 选择所有匹配选择器的节点 */
+  selectAll: (id: string) => SelectorQuery;
+  /** 选择窗口对象 */
+  selectViewport: () => SelectorQuery;
+  /** 位置信息 将当前选择节点的信息放入查询结果 */
+  boundingClientRect: () => SelectorQuery;
+  /** 滚动信息 将当前选择节点的信息放入查询结果 */
+  scrollOffset: () => SelectorQuery;
+  exec: (callback: (data: SelectorQueryInfo[]) => void) => void;
+}
+
 /**
  * 获取一个节点查询对象 SelectorQuery
  * {@link https://ding-doc.dingtalk.com/doc#/dev/selector-query 界面=>节点查询}.
  */
-export function createSelectorQuery() {
+export function createSelectorQuery(): SelectorQuery {
   return dd.createSelectorQuery();
 }
 
