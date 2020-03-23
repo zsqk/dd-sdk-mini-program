@@ -1,6 +1,6 @@
 {
   "name": "@zsqk/dd-sdk-mini-program",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "钉钉小程序 JSAPI SDK. Promise 封装, 类型提示.",
   "keywords": [
     "dingding",
