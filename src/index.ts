@@ -1,5 +1,3 @@
-import forEach from 'lodash/forEach';
-
 export default {
   alert,
   confirm,
@@ -330,9 +328,9 @@ export function downloadFile(opt: {
 function getHeaders(origin: any) {
   if (Array.isArray(origin)) {
     const obj = {};
-    forEach(origin, v => {
+    for (const v of origin) {
       Object.assign(obj, v);
-    });
+    }
     return obj;
   }
   return origin;
