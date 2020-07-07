@@ -80,6 +80,24 @@ type Millisecond = number;
 type Second = number;
 
 /**
+ * reject 包裹函数, 保证最终处理的为 Error 类型
+ * @param r Promise 的 reject 函数
+ */
+const rejectWarp = (r: (reason?: any) => void) => {
+  return (err: unknown) => {
+    if (err instanceof Error) {
+      r(err);
+      return;
+    }
+    if (typeof err === 'string') {
+      r(new Error(err));
+      return;
+    }
+    r(new Error(JSON.stringify(err)));
+  }
+}
+
+/**
  * 警告框
  * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
  */
@@ -101,7 +119,7 @@ export function alert({
       content,
       buttonText,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -124,7 +142,7 @@ export function confirm(opt: {
     dd.confirm({
       ...opt,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -153,7 +171,7 @@ export function showToast({
       type,
       duration,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -177,7 +195,7 @@ export function showLoading({
       content,
       delay,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -209,7 +227,7 @@ export function showActionSheet(opt: {
     dd.showActionSheet({
       ...opt,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -223,7 +241,7 @@ export function getAuthCode() {
       success(res: any) {
         resolve(res.authCode);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -260,7 +278,7 @@ export function httpRequest(opt: {
         res.headers = getHeaders(res.headers);
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
       ...rest,
     });
   });
@@ -296,7 +314,7 @@ export function uploadFile(opt: {
     dd.uploadFile({
       ...opt,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -317,7 +335,7 @@ export function downloadFile(opt: {
       success(res: any) {
         resolve(res.filePath);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -375,7 +393,7 @@ export function getSystemInfo(): Promise<{
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -449,7 +467,7 @@ export function redirectTo(url: string) {
     dd.redirectTo({
       url,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -467,7 +485,7 @@ export function navigateTo(url: string) {
     dd.navigateTo({
       url,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -484,7 +502,7 @@ export function navigateBack(delta = 1) {
     dd.navigateBack({
       delta,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -501,7 +519,7 @@ export function reLaunch(url: string) {
     dd.reLaunch({
       url,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -528,7 +546,7 @@ export function setNavigationBar({
       backgroundColor,
       reset,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -544,7 +562,7 @@ export function switchTab(url: string) {
     dd.switchTab({
       url,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -566,7 +584,7 @@ export function datePicker(opt: {
       success(res: any) {
         resolve(res.data);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -694,7 +712,7 @@ export function getLocation({
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -729,7 +747,7 @@ export function openLocation({
       address,
       scale,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -756,7 +774,7 @@ export function scan(
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -809,7 +827,7 @@ export function complexChoose(opt: {
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -850,7 +868,7 @@ export function chooseDepartments(opt: {
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -867,7 +885,7 @@ export function createGroupChat(users: Array<string>): Promise<Array<string>> {
       success(res: any) {
         resolve(res.id);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -911,7 +929,7 @@ export function choosePhonebook({
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -969,7 +987,7 @@ export function chooseExternalUsers({
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1017,7 +1035,7 @@ export function editExternalUser(opt: {
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1061,7 +1079,7 @@ export function chooseUserFromList({
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1077,7 +1095,7 @@ export function setStorage(opt: { key: string; data: object | string }) {
     dd.setStorage({
       ...opt,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1105,7 +1123,7 @@ export function getStorage(key: string): Promise<object | string> {
       success(res: any) {
         resolve(res.data);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1130,7 +1148,7 @@ export function removeStorage(key: string) {
     dd.removeStorage({
       key,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1162,7 +1180,7 @@ export function getNetworkType(): Promise<{
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1177,7 +1195,7 @@ export function getClipboard(): Promise<string> {
       success(res: any) {
         resolve(res.text);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1192,7 +1210,7 @@ export function setClipboard(text: string) {
     dd.setClipboard({
       text,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1205,7 +1223,7 @@ export function vibrate() {
   return new Promise((resolve, reject) => {
     dd.vibrate({
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1230,7 +1248,7 @@ export function chooseImage({
       success(res: any) {
         resolve(res.filePaths);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1253,7 +1271,7 @@ export function previewImage({
       urls,
       current,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1268,7 +1286,7 @@ export function saveImage(url: string) {
     dd.saveImage({
       url,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1294,7 +1312,7 @@ export function compressImage({
       success(res: any) {
         resolve(res.filePaths);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1320,7 +1338,7 @@ export function getImageInfo(
       succrss(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1373,7 +1391,7 @@ export function chooseVideo({
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1430,7 +1448,7 @@ export function createDing(opt: {
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1445,7 +1463,7 @@ export function callUsers(users: Array<string>) {
     dd.callUsers({
       users,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1466,7 +1484,7 @@ export function showCallMenu(opt: {
     dd.showCallMenu({
       ...opt,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1483,7 +1501,7 @@ export function checkBizCall(corpId: string): Promise<boolean> {
       success(res: any) {
         resolve(res.isSupport);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1513,7 +1531,7 @@ export function pay(
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1549,7 +1567,7 @@ export function saveFileToDingTalk(opt: {
       success(res: any) {
         resolve(res.data);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1638,7 +1656,7 @@ export function uploadAttachmentToDingTalk({
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1661,7 +1679,7 @@ export function chooseDingTalkDir(): Promise<{
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1687,7 +1705,7 @@ export function chooseChatForNormalMsg(
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1713,7 +1731,7 @@ export function chooseChat(opt: {
       success(res: any) {
         resolve(res);
       },
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1728,7 +1746,7 @@ export function openChatByChatId(chatId: string) {
     dd.openChatByChatId({
       chatId,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1743,7 +1761,7 @@ export function openChatByUserId(userId: string) {
     dd.openChatByUserId({
       userId,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1765,7 +1783,7 @@ export function connectSocket(opt: {
     dd.connectSocket({
       ...opt,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1820,7 +1838,7 @@ export function sendSocketMessage(opt: { data: string; isBuffer?: boolean }) {
     dd.sendSocketMessage({
       ...opt,
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }
@@ -1850,7 +1868,7 @@ export function closeSocket() {
   return new Promise((resolve, reject) => {
     dd.closeSocket({
       success: resolve,
-      fail: reject,
+      fail: rejectWarp(reject),
     });
   });
 }

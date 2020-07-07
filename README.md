@@ -7,6 +7,7 @@
 特点:
 
 - Promise 封装.
+- 错误总是 Error 类型.
 - TypeScript 类型提示.
 - 没有依赖.
 - 总是最新.
