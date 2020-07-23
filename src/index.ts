@@ -94,8 +94,8 @@ const rejectWarp = (r: (reason?: any) => void) => {
       return;
     }
     r(new Error(JSON.stringify(err)));
-  }
-}
+  };
+};
 
 /**
  * 警告框
@@ -137,7 +137,7 @@ export function confirm(opt: {
   confirmButtonText?: string;
   /** 取消按钮文字 */
   cancelButtonText?: string;
-}) {
+}): Promise<{ confirm: boolean }> {
   return new Promise((resolve, reject) => {
     dd.confirm({
       ...opt,
