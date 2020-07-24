@@ -77,7 +77,12 @@ export default {
 
 /** 毫秒 */
 type Millisecond = number;
+/** 秒 */
 type Second = number;
+
+interface CommonObject {
+  [key: string]: string;
+}
 
 /**
  * reject 包裹函数, 保证最终处理的为 Error 类型
@@ -259,24 +264,35 @@ export const request = httpRequest;
 type HttpRequestMethod = 'GET' | 'POST';
 
 /**
+ * httpRequest 返回信息格式转换
+ */
+type HttpRequestResFormat = 'json' | 'text' | 'base64';
+
+/**
  * 发送网络请求
  * {@link https://ding-doc.dingtalk.com/doc#/dev/httprequest 网络=>发送网络请求}
  * @param url 目标服务器url
  * @param headers 设置请求的 HTTP 头
  * 默认 {'Content-Type': 'application/x-www-form-urlencoded'}
  * @param method 默认 GET，目前文档只说了支持 GET，POST
+ * @param dataType 默认 JSON
+ * @param timeout HTTP 请求超时时间, 默认 30,000 毫秒
  * @param data  请求参数
  */
 export function httpRequest(opt: {
   url: string;
   method: HttpRequestMethod;
+  dataType: HttpRequestResFormat;
+  timeout: Millisecond;
   headers?: any;
-  data?: any;
+  data?: CommonObject | string;
 }) {
   let { headers = {}, data, ...rest } = opt;
   if (!headers['Content-Type']) {
     headers['Content-Type'] = 'application/json';
-    data = JSON.stringify(data);
+    if (typeof data !== 'string') {
+      data = JSON.stringify(data);
+    }
   }
   return new Promise((resolve, reject) => {
     dd.httpRequest({
