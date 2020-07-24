@@ -254,17 +254,22 @@ export function getAuthCode() {
 export const request = httpRequest;
 
 /**
+ * httpRequest 支持的请求方法
+ */
+type HttpRequestMethod = 'GET' | 'POST';
+
+/**
  * 发送网络请求
  * {@link https://ding-doc.dingtalk.com/doc#/dev/httprequest 网络=>发送网络请求}
  * @param url 目标服务器url
  * @param headers 设置请求的 HTTP 头
  * 默认 {'Content-Type': 'application/x-www-form-urlencoded'}
- * @param method 默认GET，目前支持GET，POST
+ * @param method 默认 GET，目前文档只说了支持 GET，POST
  * @param data  请求参数
  */
 export function httpRequest(opt: {
   url: string;
-  method: string;
+  method: HttpRequestMethod;
   headers?: any;
   data?: any;
 }) {

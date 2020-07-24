@@ -19,7 +19,7 @@
   "rules": {},
   "overrides": [
     {
-      "files": ["*.d.ts"],
+      "files": ["*.d.ts", "*.ts"],
       "rules": {
         "no-unused-vars": "off"
       }
