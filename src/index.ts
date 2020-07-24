@@ -248,6 +248,13 @@ export function getAuthCode() {
 
 /**
  * 发送网络请求
+ * {@link https://opendocs.alipay.com/mini/00hxw8}
+ * 钉钉小程序暂时不支持 my.request, 目前使用 dd.httpRequest 替代.
+ */
+export const request = httpRequest;
+
+/**
+ * 发送网络请求
  * {@link https://ding-doc.dingtalk.com/doc#/dev/httprequest 网络=>发送网络请求}
  * @param url 目标服务器url
  * @param headers 设置请求的 HTTP 头
