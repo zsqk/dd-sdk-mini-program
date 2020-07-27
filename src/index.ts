@@ -103,6 +103,31 @@ const rejectWarp = (r: (reason?: any) => void) => {
 };
 
 /**
+ * 获取钉钉 SDK 相关信息
+ * {@link https://ding-doc.dingtalk.com/doc#/dev/xdu3pr 获取基础库版本号}
+ */
+export function getDingtalkSDK(): {
+  /** 是否在钉钉环境下 */
+  dd: boolean;
+  /** 钉钉小程序平台阶段 */
+  stage?: 'v1' | 'v2';
+  /** 钉钉 SDK 版本号 */
+  version?: string;
+} {
+  if (!dd) {
+    return { dd: false };
+  }
+  if (dd.ExtSDKVersion) {
+    return { dd: true, stage: 'v2', version: dd.ExtSDKVersion };
+  }
+  if (dd.SDKVersion) {
+    return { dd: true, stage: 'v1', version: dd.SDKVersion };
+  }
+  console.error({ dd });
+  throw new Error('预期之外的平台');
+}
+
+/**
  * 警告框
  * {@link https://ding-doc.dingtalk.com/doc#/dev/ui-feedback 界面=>交互反馈}
  */
