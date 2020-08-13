@@ -289,12 +289,12 @@ export const request = httpRequest;
 /**
  * httpRequest 支持的请求方法
  */
-type HttpRequestMethod = 'GET' | 'POST';
+export type HttpRequestMethod = 'GET' | 'POST';
 
 /**
  * httpRequest 返回信息格式转换
  */
-type HttpRequestResFormat = 'json' | 'text' | 'base64';
+export type HttpRequestResFormat = 'json' | 'text' | 'base64';
 
 /**
  * 发送网络请求
@@ -309,9 +309,9 @@ type HttpRequestResFormat = 'json' | 'text' | 'base64';
  */
 export function httpRequest(opt: {
   url: string;
-  method: HttpRequestMethod;
-  dataType: HttpRequestResFormat;
-  timeout: Millisecond;
+  method?: HttpRequestMethod;
+  dataType?: HttpRequestResFormat;
+  timeout?: Millisecond;
   headers?: any;
   data?: CommonObject | string;
 }) {
