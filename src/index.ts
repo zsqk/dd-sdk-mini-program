@@ -117,7 +117,7 @@ export function getDingtalkSDK(): {
   /** 钉钉 SDK 版本号 */
   version?: string;
 } {
-  if (!dd) {
+  if (typeof dd === 'undefined') {
     return { dd: false };
   }
   if (dd.ExtSDKVersion) {
