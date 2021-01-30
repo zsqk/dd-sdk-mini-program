@@ -411,9 +411,11 @@ function getHeaders(origin: any) {
     }
     h = obj;
   }
-  return Object.fromEntries(
-    Object.entries(h).map(([k, v]) => [k.toLowerCase(), v])
-  );
+  const obj: Record<string, unknown> = {};
+  for (const [k, v] of Object.entries(h)) {
+    obj[k.toLowerCase()] = v;
+  }
+  return obj;
 }
 
 /**
