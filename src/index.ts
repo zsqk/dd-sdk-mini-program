@@ -312,6 +312,7 @@ export function httpRequest(opt: {
   method?: HttpRequestMethod;
   dataType?: HttpRequestResFormat;
   timeout?: Millisecond;
+  /** 请求头 */
   headers?: any;
   data?: CommonObject | string;
 }) {
@@ -398,16 +399,21 @@ export function downloadFile(opt: {
 
 /**
  * 专为处理钉钉 httpRequest 问题
+ * 1. 如果为 { k: v }[] 类型, 转为 Record<string, unknown>
+ * 2. headers key 统一转为小写
  */
 function getHeaders(origin: any) {
+  let h = origin;
   if (Array.isArray(origin)) {
     const obj = {};
     for (const v of origin) {
       Object.assign(obj, v);
     }
-    return obj;
+    h = obj;
   }
-  return origin;
+  return Object.fromEntries(
+    Object.entries(h).map(([k, v]) => [k.toLowerCase(), v])
+  );
 }
 
 /**
